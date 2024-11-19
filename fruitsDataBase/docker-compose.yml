@@ -1,0 +1,20 @@
+services:
+  fruitsDataBase:
+    image: postgres:latest
+    container_name: fruitsDataBase
+    environment:
+      POSTGRES_USER: superadmin
+      POSTGRES_PASSWORD: superadmin
+      POSTGRES_DB: fruits
+    ports:
+      - "5544:5432"
+    volumes:
+      - fruits_db_data:/var/lib/postgresql/data
+#      - ./fruitsDataBase-init/:/docker-entrypoint-initdb.d/
+    networks:
+      - fruits_network
+volumes:
+  fruits_db_data:
+networks:
+  fruits_network:
+    driver: bridge
