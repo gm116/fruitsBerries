@@ -1,15 +1,13 @@
-// src/App.js
-import React from 'react';
-import TreeList from './components/TreeList';
-import TreeForm from './components/TreeForm';
+import React from "react";
+import "./App.css";
+import MapComponent from "./components/Map/Map";
 
-function App() {
+const App = () => {
   return (
     <div className="App">
-      <TreeForm />
-      <TreeList />
+      <MapComponent />
     </div>
   );
-}
+};
 
 export default App;
