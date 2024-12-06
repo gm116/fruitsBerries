@@ -1,13 +1,13 @@
 import "./App.css";
 import MapComponent from "./components/Map/Map";
-import ActivityFeed from "./components/ActivityFeed/ActivityFeed";
+import Sidebar  from "./components/Sidebar";
 
 
 const App = () => {
   return (
     <div className="App">
-      <ActivityFeed />
-      {/*<MapComponent />*/}
+      <Sidebar />
+      <MapComponent />
     </div>
   );
 };
