@@ -10,7 +10,7 @@ services:
       - "5544:5432"
     volumes:
       - fruits_db_data:/var/lib/postgresql/data
-#      - ./fruitsDataBase-init/:/docker-entrypoint-initdb.d/
+      - ./init/:/docker-entrypoint-initdb.d/
     networks:
       - fruits_network
 volumes:
