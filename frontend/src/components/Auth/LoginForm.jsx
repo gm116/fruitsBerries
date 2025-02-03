@@ -1,26 +1,65 @@
-import React from "react";
+import React, {useState} from "react";
 import "./AuthPage.css";
 
 const LoginForm = () => {
-  const handleLogin = (e) => {
-    e.preventDefault();
-    // логика для входа
-  };
+    const [username, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [token, setToken] = useState("");
 
-  return (
-    <form className="auth-form" onSubmit={handleLogin}>
-      <h2>Вход</h2>
-      <label>
-        Email:
-        <input type="email" required />
-      </label>
-      <label>
-        Пароль:
-        <input type="password" required />
-      </label>
-      <button type="submit">Войти</button>
-    </form>
-  );
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch("http://localhost:8080/api/users/login/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({username: username, password}),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Успешный вход, сохраняем токены
+                // alert("Успешный вход!");
+                setToken(data.access);
+                console.log("Access token:", data.access);
+                localStorage.setItem("token", data.access); // Сохраняем токен в локальном хранилище
+                alert(localStorage.getItem("token"))
+            } else {
+                setError("Ошибка входа");
+            }
+        } catch (error) {
+            setError("Ошибка связи с сервером");
+        }
+    };
+
+    return (
+        <form className="auth-form" onSubmit={handleLogin}>
+            <h2>Вход</h2>
+            {error && <p className="error">{error}</p>}
+            <label>
+                Логин:
+                <input
+                    type="username"
+                    value={username}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                />
+            </label>
+            <label>
+                Пароль:
+                <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
+            </label>
+            <button type="submit">Войти</button>
+        </form>
+    );
 };
 
 export default LoginForm;
