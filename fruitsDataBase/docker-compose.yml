@@ -3,9 +3,9 @@ services:
     image: postgres:latest
     container_name: fruitsDataBase
     environment:
-      POSTGRES_USER: superadmin
-      POSTGRES_PASSWORD: superadmin
-      POSTGRES_DB: fruits
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     ports:
       - "5544:5432"
     volumes:
