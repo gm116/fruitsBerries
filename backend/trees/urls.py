@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import TreeList
+from . import views
 
 urlpatterns = [
-    path('api/trees/', TreeList.as_view(), name='tree-list'),
+    path('add/', views.add_plant, name='add-plant'),
 ]

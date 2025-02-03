@@ -1,0 +1,62 @@
+[
+    {
+        "model": "users.achievement",
+        "pk": 1,
+        "fields": {
+            "name": "Посадил 10 деревьев",
+            "description": "Добавьте 10 деревьев в систему",
+            "condition": "add_10_trees",
+            "threshold": 10
+        }
+    },
+    {
+        "model": "users.achievement",
+        "pk": 2,
+        "fields": {
+            "name": "Экологический активист",
+            "description": "Добавьте деревья из 5 разных видов",
+            "condition": "add_5_species",
+            "threshold": 5
+        }
+    },
+    {
+        "model": "users.achievement",
+        "pk": 3,
+        "fields": {
+            "name": "Первое дерево",
+            "description": "Добавьте первое дерево",
+            "condition": "add_first_tree",
+            "threshold": 1
+        }
+    },
+    {
+        "model": "users.achievement",
+        "pk": 4,
+        "fields": {
+            "name": "Созревание плодов",
+            "description": "Отслеживайте созревание плодов в течение месяца",
+            "condition": "track_ripe_fruits",
+            "threshold": 1
+        }
+    },
+    {
+        "model": "users.achievement",
+        "pk": 5,
+        "fields": {
+            "name": "Любитель ягод",
+            "description": "Добавьте 5 ягодных кустарников",
+            "condition": "add_5_berry_bushes",
+            "threshold": 5
+        }
+    },
+    {
+        "model": "users.achievement",
+        "pk": 6,
+        "fields": {
+            "name": "Местный эксперт",
+            "description": "Добавьте деревья в 10 разных регионах",
+            "condition": "add_10_locations",
+            "threshold": 10
+        }
+    }
+]

@@ -1,7 +1,14 @@
 from rest_framework import serializers
-from .models import Tree
+from .models import Species, Plant
 
-class TreeSerializer(serializers.ModelSerializer):
+
+class TreeSpeciesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Tree
-        fields = ['id', 'name', 'age']
+        model = Species
+        fields = ['id', 'name', 'description', 'image_url']
+
+
+class PlantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Plant
+        fields = ['id', 'user', 'name', 'species', 'latitude', 'longitude', 'image_url']
