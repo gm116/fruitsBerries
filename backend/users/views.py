@@ -7,7 +7,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import User
+from .models import User, Achievement, UserAchievement
 from .serializers import UserSerializer
 
 
@@ -21,6 +21,14 @@ def register_user(request):
         return Response({"detail": "Email already exists."}, status=400)
 
     user = User.objects.create_user(username=username, email=email, password=password)
+
+    achievements = Achievement.objects.all()
+    user_achievements = [
+        UserAchievement(user=user, achievement=achievement, progress=0, completed=False)
+        for achievement in achievements
+    ]
+    UserAchievement.objects.bulk_create(user_achievements)
+
     serializer = UserSerializer(user)
     return Response(serializer.data, status=201)
 

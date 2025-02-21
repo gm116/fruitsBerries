@@ -1,3 +1,4 @@
+from .models import Plant
 from .serializers import PlantSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -9,14 +10,12 @@ from users.models import Achievement, UserAchievement
 @api_view(['POST'])
 def add_plant(request):
     if request.method == 'POST':
-        user = request.user  # предполагается, что пользователь авторизован
+        user = request.user
         request.data['user'] = user.id
 
         serializer = PlantSerializer(data=request.data)
         if serializer.is_valid():
             plant = serializer.save()
-
-            # Логика проверки достижений
             check_achievements(user)
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -24,16 +23,32 @@ def add_plant(request):
 
 
 def check_achievements(user):
-    achievements = Achievement.objects.all()
+    user_achievements = UserAchievement.objects.filter(user=user)
 
-    for achievement in achievements:
-        user_achievement, created = UserAchievement.objects.get_or_create(
-            user=user, achievement=achievement)
+    for user_achievement in user_achievements:
+        achievement = user_achievement.achievement
 
         if not user_achievement.completed:
-            if achievement.condition == "add_10_trees":
+            if achievement.condition == "add_first_tree":
+                user_achievement.progress = 1
+            elif achievement.condition == "add_10_trees":
                 user_achievement.progress += 1
-                if user_achievement.progress >= achievement.threshold:
-                    user_achievement.completed = True
-                    user_achievement.save()
-            # Можно добавить другие условия для разных ачивокEST)
+            elif achievement.condition == "add_50_trees":
+                user_achievement.progress += 1
+            elif achievement.condition == "add_5_species":
+                species_count = Plant.objects.filter(user=user).values("species").distinct().count()
+                user_achievement.progress = species_count
+            elif achievement.condition == "add_10_species":
+                species_count = Plant.objects.filter(user=user).values("species").distinct().count()
+                user_achievement.progress = species_count
+            elif achievement.condition == "add_5_berry_bushes":
+                berry_count = Plant.objects.filter(user=user, species__category="Bush").count()
+                user_achievement.progress = berry_count
+            elif achievement.condition == "add_10_locations":
+                region_count = Plant.objects.filter(user=user).values("latitude", "longitude").distinct().count()
+                user_achievement.progress = region_count
+
+            if user_achievement.progress >= achievement.threshold:
+                user_achievement.completed = True
+
+    UserAchievement.objects.bulk_update(user_achievements, ["progress", "completed"])
