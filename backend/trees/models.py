@@ -8,6 +8,7 @@ class Species(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     image_url = models.CharField(max_length=255, blank=True, null=True)
+    category = models.CharField(max_length=50, choices=[("tree", "Tree"), ("bush", "Иush")])
 
     def __str__(self):
         return self.name
