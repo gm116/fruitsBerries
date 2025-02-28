@@ -7,7 +7,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import User, Achievement, UserAchievement
+from .models import User, Achievement, UserAchievement, ActivityLog
 from .serializers import UserSerializer
 
 
@@ -28,6 +28,8 @@ def register_user(request):
         for achievement in achievements
     ]
     UserAchievement.objects.bulk_create(user_achievements)
+
+    ActivityLog.objects.create(user=user, action=f"Зарегестрировался пользователь {username}")
 
     serializer = UserSerializer(user)
     return Response(serializer.data, status=201)

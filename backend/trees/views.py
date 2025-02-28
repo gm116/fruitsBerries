@@ -4,7 +4,8 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from users.models import Achievement, UserAchievement
+
+from users.models import ActivityLog, Achievement, UserAchievement
 
 
 @api_view(['POST'])
@@ -18,13 +19,15 @@ def add_plant(request):
             plant = serializer.save()
             check_achievements(user)
 
+            ActivityLog.objects.create(user=user, action=f"Пользователь {user} добавил: {plant.name}!")
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 def check_achievements(user):
     user_achievements = UserAchievement.objects.filter(user=user)
-
+    new_achievements = []
     for user_achievement in user_achievements:
         achievement = user_achievement.achievement
 
@@ -41,7 +44,7 @@ def check_achievements(user):
             elif achievement.condition == "add_10_species":
                 species_count = Plant.objects.filter(user=user).values("species").distinct().count()
                 user_achievement.progress = species_count
-            elif achievement.condition == "add_5_berry_bushes":
+            elif achievement.condition == "add_5_bushes":
                 berry_count = Plant.objects.filter(user=user, species__category="Bush").count()
                 user_achievement.progress = berry_count
             elif achievement.condition == "add_10_locations":
@@ -50,5 +53,9 @@ def check_achievements(user):
 
             if user_achievement.progress >= achievement.threshold:
                 user_achievement.completed = True
+                new_achievements.append(achievement.name)
 
     UserAchievement.objects.bulk_update(user_achievements, ["progress", "completed"])
+
+    for achievement_name in new_achievements:
+        ActivityLog.objects.create(user=user, action=f"{user} получил достижение: {achievement_name}")
