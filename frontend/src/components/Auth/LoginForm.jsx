@@ -1,11 +1,12 @@
 import React, {useState} from "react";
+import { useNavigate } from "react-router-dom";
 import "./AuthPage.css";
 
 const LoginForm = () => {
     const [username, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const [token, setToken] = useState("");
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -21,12 +22,11 @@ const LoginForm = () => {
             const data = await response.json();
 
             if (response.ok) {
-                // Успешный вход, сохраняем токены
-                // alert("Успешный вход!");
-                setToken(data.access);
-                console.log("Access token:", data.access);
-                localStorage.setItem("token", data.access); // Сохраняем токен в локальном хранилище
-                alert(localStorage.getItem("token"))
+                setError("Успешный вход!");
+                // setToken(data.access);
+                navigate("/");
+                localStorage.setItem("token", data.access);
+                // alert(localStorage.getItem("token"))
             } else {
                 setError("Ошибка входа");
             }
