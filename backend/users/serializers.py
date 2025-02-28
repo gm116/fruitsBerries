@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Achievement
+from .models import User, Achievement, ActivityLog
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -22,3 +22,9 @@ class AchievementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Achievement
         fields = ['id', 'name', 'description']
+
+
+class ActivityLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ActivityLog
+        fields = ['id', 'action', 'action_date']

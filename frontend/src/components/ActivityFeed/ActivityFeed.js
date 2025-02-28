@@ -1,14 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./ActivityFeed.css";
 
-const activities = [
-  { id: 1, type: "tree_added", message: "Добавлено новое дерево в парк", time: "10:30 AM" },
-  { id: 2, type: "achievement_unlocked", message: "Получено достижение 'Плодовитый садовод'", time: "11:00 AM" },
-  { id: 3, type: "profile_updated", message: "Обновлено фото профиля", time: "1:45 PM" }
-];
-
 const ActivityFeed = () => {
+  const [activities, setActivities] = useState([]);
   const [isFeedOpen, setFeedOpen] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch("http://localhost:8080/api/users/activity-feed/", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Ошибка загрузки фида");
+        }
+
+        const data = await response.json();
+        setActivities(data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
+    fetchActivities();
+  }, []);
 
   const toggleFeed = () => {
     setFeedOpen(!isFeedOpen);
@@ -24,11 +46,16 @@ const ActivityFeed = () => {
       </button>
       {isFeedOpen && (
         <ul>
-          {activities.map((activity) => (
-            <li key={activity.id} className={activity.type}>
-              <strong>{activity.time}:</strong> {activity.message}
-            </li>
-          ))}
+          {error && <p className="error">{error}</p>}
+          {activities.length === 0 ? (
+            <p>Нет активности</p>
+          ) : (
+            activities.map((activity) => (
+              <li key={activity.id}>
+                <strong>{new Date(activity.action_date).toLocaleTimeString()}:</strong> {activity.action}
+              </li>
+            ))
+          )}
         </ul>
       )}
     </div>

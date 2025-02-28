@@ -114,8 +114,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',  # Разрешает доступ всем пользователям
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
 SIMPLE_JWT = {

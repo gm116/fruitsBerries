@@ -1,6 +1,7 @@
 from django.utils.timezone import now
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -8,7 +9,7 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import User, Achievement, UserAchievement, ActivityLog
-from .serializers import UserSerializer
+from .serializers import UserSerializer, ActivityLogSerializer
 
 
 @api_view(['POST'])
@@ -63,3 +64,11 @@ def login_user(request):
         }, status=status.HTTP_200_OK)
 
     return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_activity_feed(request):
+    activities = ActivityLog.objects.all().order_by('-action_date')[:5]
+    serializer = ActivityLogSerializer(activities, many=True)
+    return Response(serializer.data)
