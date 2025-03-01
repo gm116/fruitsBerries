@@ -8,6 +8,13 @@ from rest_framework.response import Response
 from users.models import ActivityLog, Achievement, UserAchievement
 
 
+@api_view(['GET'])
+def get_plants(request):
+    plants = Plant.objects.all()
+    serializer = PlantSerializer(plants, many=True)
+    return Response(serializer.data)
+
+
 @api_view(['POST'])
 def add_plant(request):
     if request.method == 'POST':

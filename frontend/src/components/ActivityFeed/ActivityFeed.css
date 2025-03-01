@@ -7,7 +7,7 @@
   background-color: #f0f0f0;
   transition: transform 0.3s ease-in-out;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
-  z-index: 1; /* Ensure feed is behind the button */
+  z-index: 1;
 }
 
 .activity-feed.closed {
@@ -17,7 +17,7 @@
 .toggle-button {
   position: absolute;
   top: 20px;
-  right: -55px; /* Кнопка смещена за пределы фида, справа */
+  right: -55px;
   transform: translateY(-50%);
   background-color: #007bff;
   color: white;
@@ -25,11 +25,11 @@
   padding: 20px 15px;
   border-radius: 3px;
   cursor: pointer;
-  z-index: 2; /* Button is always on top of the feed */
+  z-index: 2;
 }
 
 .toggle-button.open {
-  right: -55px; /* Кнопка остаётся на своём месте */
+  right: -55px;
 }
 
 button {

@@ -1,65 +1,70 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import "./ActivityFeed.css";
 
-const ActivityFeed = () => {
-  const [activities, setActivities] = useState([]);
-  const [isFeedOpen, setFeedOpen] = useState(true);
-  const [error, setError] = useState("");
+const ActivityFeed = ({selectedTree}) => {
+    const [activities, setActivities] = useState([]);
+    const [isFeedOpen, setFeedOpen] = useState(true);
+    const [error, setError] = useState("");
 
-  useEffect(() => {
-    const fetchActivities = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch("http://localhost:8080/api/users/activity-feed/", {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+    useEffect(() => {
+        const fetchActivities = async () => {
+            try {
+                const response = await fetch("http://localhost:8080/api/users/activity-feed/");
+                if (!response.ok) throw new Error("Ошибка загрузки фида");
 
-        if (!response.ok) {
-          throw new Error("Ошибка загрузки фида");
-        }
+                const data = await response.json();
+                setActivities(data);
+            } catch (err) {
+                setError(err.message);
+            }
+        };
 
-        const data = await response.json();
-        setActivities(data);
-      } catch (err) {
-        setError(err.message);
-      }
+        fetchActivities();
+    }, []);
+
+    const toggleFeed = () => {
+        setFeedOpen(!isFeedOpen);
     };
 
-    fetchActivities();
-  }, []);
+    return (
+        <div className={`activity-feed ${!isFeedOpen ? "closed" : ""}`}>
+            <button className={`toggle-button ${isFeedOpen ? "open" : ""}`} onClick={toggleFeed}>
+                {isFeedOpen ? "Hide" : "Show"}
+            </button>
 
-  const toggleFeed = () => {
-    setFeedOpen(!isFeedOpen);
-  };
+            {isFeedOpen && (
+                <>
+                    {selectedTree && (
+                        <div className="tree-info">
+                            <h3>{selectedTree.name}</h3>
+                            <p>
+                                Тип: {selectedTree.species_name === "tree"
+                                ? "Дерево"
+                                : selectedTree.species_name === "bush"
+                                    ? "Кустарник"
+                                    : "Неизвестно"}
+                            </p>
+                            {selectedTree.image_url && <img src={selectedTree.image_url} alt={selectedTree.name}/>}
+                        </div>
+                    )}
 
-  return (
-    <div className={`activity-feed ${!isFeedOpen ? "closed" : ""}`}>
-      <button
-        className={`toggle-button ${isFeedOpen ? "open" : ""}`}
-        onClick={toggleFeed}
-      >
-        {isFeedOpen ? "Hide" : "Show"}
-      </button>
-      {isFeedOpen && (
-        <ul>
-          {error && <p className="error">{error}</p>}
-          {activities.length === 0 ? (
-            <p>Нет активности</p>
-          ) : (
-            activities.map((activity) => (
-              <li key={activity.id}>
-                <strong>{new Date(activity.action_date).toLocaleTimeString()}:</strong> {activity.action}
-              </li>
-            ))
-          )}
-        </ul>
-      )}
-    </div>
-  );
+                    {error && <p className="error">{error}</p>}
+
+                    {activities.length === 0 ? (
+                        <p>Нет активности</p>
+                    ) : (
+                        <ul>
+                            {activities.map((activity) => (
+                                <li key={activity.id}>
+                                    <strong>{new Date(activity.action_date).toLocaleTimeString()}:</strong> {activity.action}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </>
+            )}
+        </div>
+    );
 };
 
 export default ActivityFeed;

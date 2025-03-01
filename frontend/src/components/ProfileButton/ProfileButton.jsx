@@ -56,7 +56,7 @@ const ProfileButton = () => {
         e.preventDefault();
         const token = localStorage.getItem("token");
         try {
-            const response = await fetch("http://localhost:8080/api/plants/add/", {
+            const response = await fetch("http://localhost:8080/api/trees/add/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
