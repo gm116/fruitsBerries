@@ -1,0 +1,76 @@
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: #2E7D32;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    overflow: hidden; /* Фиксируем элементы внутри */
+    padding: 0 3px; /* Добавляем немного отступов */
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Блок с кнопками */
+.nav-links {
+    display: flex;
+    gap: 10px;
+}
+
+/* Общие стили для всех кнопок */
+.nav-links button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 8px 12px;
+    transition: background 0.3s ease, transform 0.2s ease;
+    white-space: nowrap;
+    text-align: center;
+    min-width: 90px;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.nav-links button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+/* Кнопка выхода */
+.logout-btn {
+    background: #D32F2F;
+}
+
+.logout-btn:hover {
+    background: #B71C1C;
+}
+
+/* Кнопка входа */
+.login-btn {
+    background: #0277BD;
+}
+
+.login-btn:hover {
+    background: #01579B;
+}
+
+/* Кнопка добавления растения */
+.add-plant-btn {
+    background: #FF9800;
+}
+
+.add-plant-btn:hover {
+    background: #F57C00;
+}

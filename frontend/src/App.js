@@ -13,7 +13,7 @@ const App = () => {
     return (
         <Router>
             <div className="App">
-
+                <Header setShowAddTreeForm={setShowAddTreeForm}/>
                 <Routes>
                     <Route path="/auth" element={<AuthPage/>}/>
                     <Route
