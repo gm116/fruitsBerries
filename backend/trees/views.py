@@ -19,11 +19,12 @@ def get_plants(request):
 def add_plant(request):
     if request.method == 'POST':
         user = request.user
-        request.data['user'] = user.id
+        if not user or user.is_anonymous:
+            return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
 
         serializer = PlantSerializer(data=request.data)
         if serializer.is_valid():
-            plant = serializer.save()
+            plant = serializer.save(user=user)
             check_achievements(user)
 
             ActivityLog.objects.create(user=user, action=f"Пользователь {user} добавил: {plant.name}!")
