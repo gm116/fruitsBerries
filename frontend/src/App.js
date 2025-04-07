@@ -9,6 +9,9 @@ import ActivityFeed from "./components/ActivityFeed/ActivityFeed";
 const App = () => {
     const [selectedTree, setSelectedTree] = useState(null);
     const [showAddTreeForm, setShowAddTreeForm] = useState(false);
+    const [clickedCoords, setClickedCoords] = useState(null);
+
+    const allowMapClick = showAddTreeForm;
 
     return (
         <Router>
@@ -20,11 +23,16 @@ const App = () => {
                         path="/"
                         element={
                             <>
-                                <MapComponent onTreeSelect={setSelectedTree}/>
+                                <MapComponent
+                                    onTreeSelect={setSelectedTree}
+                                    allowMapClick={allowMapClick}
+                                    onMapClick={(coords) => setClickedCoords(coords)}
+                                />
                                 <ActivityFeed
                                     selectedTree={selectedTree}
                                     showAddTreeForm={showAddTreeForm}
                                     setShowAddTreeForm={setShowAddTreeForm}
+                                    clickedCoords={clickedCoords}
                                 />
                             </>
                         }
