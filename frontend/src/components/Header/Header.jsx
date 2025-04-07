@@ -19,7 +19,7 @@ const Header = ({ setShowAddTreeForm }) => {
 
     return (
         <header className="header">
-            <div className="logo" onClick={() => navigate("/")}>🌳 Фрукты-Ягоды</div>
+            <div className="logo" onClick={() => navigate("/")}>фрукты-ягоды</div>
             <nav className="nav-links">
                 <button onClick={() => navigate("/")}>Карта</button>
                 <button onClick={() => navigate("/achievements")}>Достижения</button>
