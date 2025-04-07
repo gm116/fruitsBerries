@@ -29,7 +29,7 @@ class Achievement(models.Model):
 class UserAchievement(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)
-    progress = models.IntegerField(default=0)  # Текущий прогресс
+    progress = models.IntegerField(default=0)
     completed = models.BooleanField(default=False)
 
     class Meta:

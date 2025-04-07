@@ -1,4 +1,4 @@
-from .models import Plant
+from .models import Plant, Species
 from .serializers import PlantSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -14,6 +14,10 @@ def get_plants(request):
     serializer = PlantSerializer(plants, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+def get_species(request):
+    species = Species.objects.all().values("id", "name")
+    return Response(species, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 def add_plant(request):
