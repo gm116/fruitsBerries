@@ -4,10 +4,20 @@ from django.db import models
 from django.conf import settings
 
 
+
+def user_avatar_path(instance, filename):
+    return f"avatars/user_{instance.id}/{filename}"
+
 class User(AbstractUser):
     email = models.EmailField(max_length=254, unique=True)
     registration_date = models.DateTimeField(auto_now_add=True)
-    profile_picture = models.CharField(blank=True, max_length=255, null=True)
+
+    profile_picture = models.ImageField(
+        upload_to=user_avatar_path,
+        blank=True,
+        null=True,
+        default="avatars/default_avatar.png"
+    )
 
     class Meta:
         db_table = 'users'

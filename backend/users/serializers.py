@@ -3,9 +3,11 @@ from .models import User, Achievement, ActivityLog
 
 
 class UserSerializer(serializers.ModelSerializer):
+    profile_picture = serializers.ImageField(read_only=True)
+
     class Meta:
         model = User
-        fields = ['username', 'password']
+        fields = ['username', 'password', 'profile_picture']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -25,6 +27,8 @@ class AchievementSerializer(serializers.ModelSerializer):
 
 
 class ActivityLogSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
     class Meta:
         model = ActivityLog
-        fields = ['id', 'action', 'action_date']
+        fields = ['id', 'action', 'action_date', 'user']

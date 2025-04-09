@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import "./ActivityFeed.css";
+import ActivityItem from "./ActivityItem";
 
 const ActivityFeed = ({
                           selectedTree, showAddTreeForm, setShowAddTreeForm, clickedCoords,
@@ -29,12 +30,21 @@ const ActivityFeed = ({
                 const response = await fetch("http://localhost:8080/api/users/activity-feed/");
                 if (!response.ok) throw new Error("Ошибка загрузки фида");
                 const data = await response.json();
-                setActivities(data);
+                setActivities((prev) => {
+                    const newActivities = data.filter(
+                        (item) => !prev.some((old) => old.id === item.id)
+                    );
+                    return [...newActivities, ...prev];
+                });
             } catch (err) {
                 setError(err.message);
             }
         };
+
         fetchActivities();
+
+        const interval = setInterval(fetchActivities, 4000);
+        return () => clearInterval(interval);
     }, []);
 
     useEffect(() => {
@@ -203,11 +213,18 @@ const ActivityFeed = ({
 
                 {error && <p className="error">{error}</p>}
 
-                {activities.length === 0 ? (<p>Нет активности</p>) : (<ul>
-                    {activities.map((activity) => (<li key={activity.id}>
-                        <strong>{new Date(activity.action_date).toLocaleTimeString()}:</strong> {activity.action}
-                    </li>))}
-                </ul>)}
+                {activities.length === 0 ? (<p>Нет активности</p>) : <div className="activity-list">
+                    <ul>
+                        {activities.map((activity) => (
+                            <ActivityItem
+                                key={activity.id}
+                                action={activity.action}
+                                user={activity.user}
+                                datetime={activity.action_date}
+                            />
+                        ))}
+                    </ul>
+                </div>}
             </>)}
         </>)}
     </div>);

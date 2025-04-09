@@ -35,7 +35,7 @@ def add_plant(request):
             plant = serializer.save(user=user)
             check_achievements(user)
 
-            ActivityLog.objects.create(user=user, action=f"Пользователь {user} добавил: {plant.name}!")
+            ActivityLog.objects.create(user=user, action=f"добавил: {plant.name}")
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -74,7 +74,7 @@ def check_achievements(user):
     UserAchievement.objects.bulk_update(user_achievements, ["progress", "completed"])
 
     for achievement_name in new_achievements:
-        ActivityLog.objects.create(user=user, action=f"{user} получил достижение: {achievement_name}")
+        ActivityLog.objects.create(user=user, action=f"получил достижение: {achievement_name}")
 
 
 class UploadPlantImageView(APIView):

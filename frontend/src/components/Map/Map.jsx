@@ -1,10 +1,10 @@
-import React, {useState, useEffect, useRef} from "react";
-import {YMaps, Map, Placemark} from "@pbe/react-yandex-maps";
+import React, { useState, useEffect, useRef } from "react";
+import { YMaps, Map, Placemark } from "@pbe/react-yandex-maps";
 import "./Map.css";
-import {defaultMapConfig} from "./MapConfig";
+import { defaultMapConfig } from "./MapConfig";
 
-const MapComponent = ({onTreeSelect, onMapClick, allowMapClick}) => {
-    const {center, zoom} = defaultMapConfig;
+const MapComponent = ({ onTreeSelect, onMapClick, allowMapClick, tempMarkerCoords }) => {
+    const { center, zoom } = defaultMapConfig;
     const [trees, setTrees] = useState([]);
     const mapRef = useRef(null);
     const [mapInstance, setMapInstance] = useState(null);
@@ -42,9 +42,9 @@ const MapComponent = ({onTreeSelect, onMapClick, allowMapClick}) => {
 
     return (
         <div className="map-container">
-            <YMaps query={{apikey: process.env.REACT_APP_YMAPS_API_KEY}}>
+            <YMaps query={{ apikey: process.env.REACT_APP_YMAPS_API_KEY }}>
                 <Map
-                    defaultState={{center, zoom}}
+                    defaultState={{ center, zoom }}
                     className="map"
                     onClick={handleMapClick}
                     instanceRef={(ref) => {
@@ -59,6 +59,13 @@ const MapComponent = ({onTreeSelect, onMapClick, allowMapClick}) => {
                             onClick={() => handlePlacemarkClick(tree)}
                         />
                     ))}
+
+                    {allowMapClick && tempMarkerCoords && (
+                        <Placemark
+                            geometry={tempMarkerCoords}
+                            options={{ preset: "islands#greenDotIcon" }}
+                        />
+                    )}
                 </Map>
             </YMaps>
         </div>
