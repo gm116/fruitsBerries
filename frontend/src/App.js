@@ -10,13 +10,26 @@ const App = () => {
     const [selectedTree, setSelectedTree] = useState(null);
     const [showAddTreeForm, setShowAddTreeForm] = useState(false);
     const [clickedCoords, setClickedCoords] = useState(null);
+    const [tempMarkerCoords, setTempMarkerCoords] = useState(null);
 
     const allowMapClick = showAddTreeForm;
+
+    const handleMapClick = (coords) => {
+        setClickedCoords(coords);
+        setTempMarkerCoords(coords);
+    };
+
+    const handleCloseForm = (value) => {
+        setShowAddTreeForm(value);
+        if (!value) {
+            setTempMarkerCoords(null);
+        }
+    };
 
     return (
         <Router>
             <div className="App">
-                <Header setShowAddTreeForm={setShowAddTreeForm}/>
+                <Header setShowAddTreeForm={handleCloseForm}/>
                 <Routes>
                     <Route path="/auth" element={<AuthPage/>}/>
                     <Route
@@ -26,12 +39,13 @@ const App = () => {
                                 <MapComponent
                                     onTreeSelect={setSelectedTree}
                                     allowMapClick={allowMapClick}
-                                    onMapClick={(coords) => setClickedCoords(coords)}
+                                    onMapClick={handleMapClick}
+                                    tempMarkerCoords={tempMarkerCoords}
                                 />
                                 <ActivityFeed
                                     selectedTree={selectedTree}
                                     showAddTreeForm={showAddTreeForm}
-                                    setShowAddTreeForm={setShowAddTreeForm}
+                                    setShowAddTreeForm={handleCloseForm}
                                     clickedCoords={clickedCoords}
                                 />
                             </>

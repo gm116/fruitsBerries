@@ -3,7 +3,11 @@ from .serializers import PlantSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser, FormParser
+import os
+from django.conf import settings
 
 from users.models import ActivityLog, Achievement, UserAchievement
 
@@ -71,3 +75,24 @@ def check_achievements(user):
 
     for achievement_name in new_achievements:
         ActivityLog.objects.create(user=user, action=f"{user} получил достижение: {achievement_name}")
+
+
+class UploadPlantImageView(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request):
+        image = request.FILES.get("image")
+        if not image:
+            return Response({"error": "No image provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        image_path = os.path.join("trees", image.name)
+        full_path = os.path.join(settings.MEDIA_ROOT, image_path)
+
+        os.makedirs(os.path.dirname(full_path), exist_ok=True)
+
+        with open(full_path, "wb+") as f:
+            for chunk in image.chunks():
+                f.write(chunk)
+
+        return Response({"image_url": settings.MEDIA_URL + image_path}, status=status.HTTP_201_CREATED)

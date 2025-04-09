@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import {YMaps, Map, Placemark} from "@pbe/react-yandex-maps";
 import "./Map.css";
 import {defaultMapConfig} from "./MapConfig";
@@ -6,6 +6,8 @@ import {defaultMapConfig} from "./MapConfig";
 const MapComponent = ({onTreeSelect, onMapClick, allowMapClick}) => {
     const {center, zoom} = defaultMapConfig;
     const [trees, setTrees] = useState([]);
+    const mapRef = useRef(null);
+    const [mapInstance, setMapInstance] = useState(null);
 
     useEffect(() => {
         const fetchTrees = async () => {
@@ -28,21 +30,39 @@ const MapComponent = ({onTreeSelect, onMapClick, allowMapClick}) => {
         onMapClick(coords);
     };
 
-    return (<div className="map-container">
-        <YMaps query={{apikey: process.env.REACT_APP_YMAPS_API_KEY}}>
-            <Map
-                defaultState={{center, zoom}}
-                className="map"
-                onClick={handleMapClick}
-            >
-                {trees.map((tree) => (<Placemark
-                    key={tree.id}
-                    geometry={[tree.latitude, tree.longitude]}
-                    onClick={() => onTreeSelect(tree)}
-                />))}
-            </Map>
-        </YMaps>
-    </div>);
+    const handlePlacemarkClick = (tree) => {
+        onTreeSelect(tree);
+        if (mapInstance) {
+            const offsetLongitude = 0.0005 * tree.longitude;
+            mapInstance.setCenter([tree.latitude, tree.longitude - offsetLongitude], 14, {
+                duration: 1000,
+            });
+        }
+    };
+
+    return (
+        <div className="map-container">
+            <YMaps query={{apikey: process.env.REACT_APP_YMAPS_API_KEY}}>
+                <Map
+                    defaultState={{center, zoom}}
+                    className="map"
+                    onClick={handleMapClick}
+                    instanceRef={(ref) => {
+                        mapRef.current = ref;
+                        setMapInstance(ref);
+                    }}
+                >
+                    {trees.map((tree) => (
+                        <Placemark
+                            key={tree.id}
+                            geometry={[tree.latitude, tree.longitude]}
+                            onClick={() => handlePlacemarkClick(tree)}
+                        />
+                    ))}
+                </Map>
+            </YMaps>
+        </div>
+    );
 };
 
 export default MapComponent;
