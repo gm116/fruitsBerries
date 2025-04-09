@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { YMaps, Map, Placemark } from "@pbe/react-yandex-maps";
 import "./Map.css";
+import GeoJsonRegions from "./GeoJsonRegions";
 import { defaultMapConfig } from "./MapConfig";
 
-const MapComponent = ({ onTreeSelect, onMapClick, allowMapClick, tempMarkerCoords }) => {
+const MapComponent = ({ onTreeSelect, onMapClick, allowMapClick, tempMarkerCoords, showRegions }) => {
     const { center, zoom } = defaultMapConfig;
     const [trees, setTrees] = useState([]);
     const mapRef = useRef(null);
@@ -35,7 +36,7 @@ const MapComponent = ({ onTreeSelect, onMapClick, allowMapClick, tempMarkerCoord
         if (mapInstance) {
             const offsetLongitude = 0.0005 * tree.longitude;
             mapInstance.setCenter([tree.latitude, tree.longitude - offsetLongitude], 14, {
-                duration: 1000,
+                duration: 400,
             });
         }
     };
@@ -66,6 +67,7 @@ const MapComponent = ({ onTreeSelect, onMapClick, allowMapClick, tempMarkerCoord
                             options={{ preset: "islands#greenDotIcon" }}
                         />
                     )}
+                    <GeoJsonRegions show={showRegions} />
                 </Map>
             </YMaps>
         </div>

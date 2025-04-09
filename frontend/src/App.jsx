@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Header from "./components/Header/Header";
 import MapComponent from "./components/Map/Map";
@@ -11,6 +11,7 @@ const App = () => {
     const [showAddTreeForm, setShowAddTreeForm] = useState(false);
     const [clickedCoords, setClickedCoords] = useState(null);
     const [tempMarkerCoords, setTempMarkerCoords] = useState(null);
+    const [showRegions, setShowRegions] = useState(false);
 
     const allowMapClick = showAddTreeForm;
 
@@ -29,9 +30,12 @@ const App = () => {
     return (
         <Router>
             <div className="App">
-                <Header setShowAddTreeForm={handleCloseForm}/>
+                <Header
+                    setShowAddTreeForm={handleCloseForm}
+                    toggleRegions={() => setShowRegions(prev => !prev)}
+                />
                 <Routes>
-                    <Route path="/auth" element={<AuthPage/>}/>
+                    <Route path="/auth" element={<AuthPage />} />
                     <Route
                         path="/"
                         element={
@@ -41,6 +45,7 @@ const App = () => {
                                     allowMapClick={allowMapClick}
                                     onMapClick={handleMapClick}
                                     tempMarkerCoords={tempMarkerCoords}
+                                    showRegions={showRegions}
                                 />
                                 <ActivityFeed
                                     selectedTree={selectedTree}

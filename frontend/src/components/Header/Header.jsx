@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Header.css";
 
-const Header = ({ setShowAddTreeForm }) => {
+const Header = ({ setShowAddTreeForm, toggleRegions }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
     const navigate = useNavigate();
     const location = useLocation();
@@ -23,6 +23,7 @@ const Header = ({ setShowAddTreeForm }) => {
             <nav className="nav-links">
                 <button onClick={() => navigate("/")}>Карта</button>
                 <button onClick={() => navigate("/achievements")}>Достижения</button>
+                <button onClick={toggleRegions}>Отобразить регионы</button>
                 {isAuthenticated ? (
                     <>
                         <button onClick={() => navigate("/profile")}>Профиль</button>
