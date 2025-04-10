@@ -1,5 +1,5 @@
-from .models import Plant, Species
-from .serializers import PlantSerializer
+from .models import Plant, Species, Region
+from .serializers import PlantSerializer, RegionSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -10,7 +10,7 @@ import os
 from django.conf import settings
 
 from users.models import ActivityLog, Achievement, UserAchievement
-
+from .utils import point_in_polygon
 
 @api_view(['GET'])
 def get_plants(request):
@@ -33,13 +33,42 @@ def add_plant(request):
         serializer = PlantSerializer(data=request.data)
         if serializer.is_valid():
             plant = serializer.save(user=user)
-            check_achievements(user)
 
+            latitude = serializer.validated_data.get("latitude")
+            longitude = serializer.validated_data.get("longitude")
+
+            matched_region = None
+            for region in Region.objects.all():
+                geom = region.geometry
+                if geom["type"] == "Polygon":
+                    for ring in geom["coordinates"]:
+                        if point_in_polygon(longitude, latitude, ring):
+                            matched_region = region
+                            break
+                elif geom["type"] == "MultiPolygon":
+                    for polygon in geom["coordinates"]:
+                        for ring in polygon:
+                            if point_in_polygon(longitude, latitude, ring):
+                                matched_region = region
+                                break
+                if matched_region:
+                    break
+
+            plant.region = matched_region
+            plant.save()
+
+            check_achievements(user)
             ActivityLog.objects.create(user=user, action=f"добавил: {plant.name}")
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['GET'])
+def get_regions(request):
+    regions = Region.objects.all()
+    serializer = RegionSerializer(regions, many=True)
+    return Response(serializer.data)
 
 def check_achievements(user):
     user_achievements = UserAchievement.objects.filter(user=user)

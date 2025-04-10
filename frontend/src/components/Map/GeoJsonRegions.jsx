@@ -5,48 +5,42 @@ const GeoJsonRegions = ({ show }) => {
   const [features, setFeatures] = useState([]);
 
   useEffect(() => {
-    const fetchGeoJson = async () => {
+    const fetchRegions = async () => {
       if (!show) {
         setFeatures([]);
         return;
       }
 
       try {
-        const response = await fetch("/gadm41_RUS_1.json");
-        const geojson = await response.json();
-        setFeatures(geojson.features || []);
+        const response = await fetch("http://localhost:8080/api/trees/get-regions/");
+        const regions = await response.json();
+        const converted = regions.map(region => ({
+          geometry: region.geometry,
+          properties: {
+            NAME_1: region.name,
+          }
+        }));
+        setFeatures(converted);
       } catch (err) {
-        console.error("Ошибка при загрузке GeoJSON:", err);
+        console.error("Ошибка при загрузке регионов:", err);
       }
     };
 
-    fetchGeoJson();
+    fetchRegions();
   }, [show]);
 
-const swapCoordinates = (coords) => {
-  if (!Array.isArray(coords)) return [];
+  const swapCoordinates = (coords) => {
+    if (!Array.isArray(coords)) return [];
 
-  if (coords.length && Array.isArray(coords[0][0])) {
-    return coords.map(ring => {
-      if (!Array.isArray(ring)) return [];
-      return ring.map(([lon, lat]) => {
-        if (typeof lon !== "number" || typeof lat !== "number") {
-          console.warn("Неверные координаты:", [lon, lat]);
-          return [0, 0];
-        }
-        return [lat, lon];
+    if (coords.length && Array.isArray(coords[0][0])) {
+      return coords.map(ring => {
+        if (!Array.isArray(ring)) return [];
+        return ring.map(([lon, lat]) => [lat, lon]);
       });
-    });
-  }
-
-  return coords.map(([lon, lat]) => {
-    if (typeof lon !== "number" || typeof lat !== "number") {
-      console.warn("Неверные координаты:", [lon, lat]);
-      return [0, 0];
     }
-    return [lat, lon];
-  });
-};
+
+    return coords.map(([lon, lat]) => [lat, lon]);
+  };
 
   return (
     <>
@@ -76,6 +70,7 @@ const swapCoordinates = (coords) => {
               strokeColor: "#0077be",
               strokeWidth: 2,
               strokeOpacity: 0.7,
+              interactivityModel: "default#transparent",
             }}
           />
         );

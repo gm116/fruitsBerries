@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Species, Plant
+from .models import Species, Plant, Region
 
 
 class TreeSpeciesSerializer(serializers.ModelSerializer):
@@ -13,3 +13,8 @@ class PlantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Plant
         fields = ['id', 'name', 'species_name', 'species', 'latitude', 'longitude', 'image_url']
+
+class RegionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Region
+        fields = ['id', 'gid_0', 'gid_1', 'name', 'geometry']
