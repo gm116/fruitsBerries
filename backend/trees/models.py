@@ -32,5 +32,16 @@ class Region(models.Model):
     name = models.CharField(max_length=255)
     geometry = models.JSONField()
 
+    name_ru = models.CharField(max_length=255, blank=True, null=True)
+    planted_count = models.IntegerField(default=0)
+
     def __str__(self):
         return self.name
+
+class Seasonality(models.Model):
+    species = models.ForeignKey(Species, on_delete=models.CASCADE)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE)
+    months = models.JSONField()
+
+    def __str__(self):
+        return f"{self.species.name} — {self.region.name}"

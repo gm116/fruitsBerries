@@ -1,14 +1,22 @@
-import React, { useState, useEffect, useRef } from "react";
-import { YMaps, Map, Placemark } from "@pbe/react-yandex-maps";
+import React, {useState, useEffect, useRef} from "react";
+import {YMaps, Map, Placemark} from "@pbe/react-yandex-maps";
 import "./Map.css";
 import GeoJsonRegions from "./GeoJsonRegions";
-import { defaultMapConfig } from "./MapConfig";
+import {defaultMapConfig} from "./MapConfig";
+import RegionInfoPanel from "./RegionInfoPanel";
 
-const MapComponent = ({ onTreeSelect, onMapClick, allowMapClick, tempMarkerCoords, showRegions }) => {
-    const { center, zoom } = defaultMapConfig;
+const MapComponent = ({
+                          onTreeSelect,
+                          onMapClick,
+                          allowMapClick,
+                          tempMarkerCoords,
+                          showRegions,
+                      }) => {
+    const {center, zoom} = defaultMapConfig;
     const [trees, setTrees] = useState([]);
     const mapRef = useRef(null);
     const [mapInstance, setMapInstance] = useState(null);
+    const [selectedRegion, setSelectedRegion] = useState(null);
 
     useEffect(() => {
         const fetchTrees = async () => {
@@ -43,9 +51,9 @@ const MapComponent = ({ onTreeSelect, onMapClick, allowMapClick, tempMarkerCoord
 
     return (
         <div className="map-container">
-            <YMaps query={{ apikey: process.env.REACT_APP_YMAPS_API_KEY }}>
+            <YMaps query={{apikey: process.env.REACT_APP_YMAPS_API_KEY}}>
                 <Map
-                    defaultState={{ center, zoom }}
+                    defaultState={{center, zoom}}
                     className="map"
                     onClick={handleMapClick}
                     instanceRef={(ref) => {
@@ -64,12 +72,22 @@ const MapComponent = ({ onTreeSelect, onMapClick, allowMapClick, tempMarkerCoord
                     {allowMapClick && tempMarkerCoords && (
                         <Placemark
                             geometry={tempMarkerCoords}
-                            options={{ preset: "islands#greenDotIcon" }}
+                            options={{preset: "islands#greenDotIcon"}}
                         />
                     )}
-                    <GeoJsonRegions show={showRegions} />
+
+                    <GeoJsonRegions
+                        show={showRegions}
+                        onRegionClick={setSelectedRegion}
+                        selectedRegionId={selectedRegion?.id}
+                    />
                 </Map>
             </YMaps>
+
+            <RegionInfoPanel
+                region={selectedRegion}
+                onClose={() => setSelectedRegion(null)}
+            />
         </div>
     );
 };

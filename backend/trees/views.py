@@ -1,4 +1,4 @@
-from .models import Plant, Species, Region
+from .models import Plant, Species, Region, Seasonality
 from .serializers import PlantSerializer, RegionSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -69,6 +69,53 @@ def get_regions(request):
     regions = Region.objects.all()
     serializer = RegionSerializer(regions, many=True)
     return Response(serializer.data)
+
+
+@api_view(['GET'])
+def get_region_heatmap(request):
+    data = []
+    raw_scores = {}
+
+
+    for region in Region.objects.all():
+        seasonality = Seasonality.objects.filter(region=region)
+
+        unique_species = set()
+        total_months = 0
+
+        for item in seasonality:
+            unique_species.add(item.species_id)
+            total_months += len(item.months)
+
+        score = len(unique_species) * total_months
+        raw_scores[region.id] = {
+            "region": region,
+            "score": score
+        }
+
+
+    all_scores = [entry["score"] for entry in raw_scores.values()]
+    min_score = min(all_scores) if all_scores else 0
+    max_score = max(all_scores) if all_scores else 1
+
+    for region_id, entry in raw_scores.items():
+        region = entry["region"]
+        score = entry["score"]
+
+        if max_score > min_score:
+            intensity = round((score - min_score) / (max_score - min_score), 3)
+        else:
+            intensity = 0
+
+        data.append({
+            "id": region.id,
+            "name": region.name_ru,
+            "geometry": region.geometry,
+            "intensity": intensity
+        })
+
+    return Response(data)
+
 
 def check_achievements(user):
     user_achievements = UserAchievement.objects.filter(user=user)

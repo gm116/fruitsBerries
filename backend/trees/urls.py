@@ -8,4 +8,5 @@ urlpatterns = [
     path('get_species/', views.get_species, name='get_species'),
     path('upload-image/', UploadPlantImageView.as_view(), name='upload-plant-image'),
     path('get-regions/', views.get_regions, name='get-regions'),
+    path("heatmap/", views.get_region_heatmap),
 ]
