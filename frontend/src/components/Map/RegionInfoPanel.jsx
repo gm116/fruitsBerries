@@ -1,42 +1,49 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
+import "./RegionInfoPanel.css";
 
-const RegionInfoPanel = ({ region, onClose }) => {
-  if (!region) return null;
+const RegionInfoPanel = ({region, onClose}) => {
+    const [crops, setCrops] = useState([]);
 
-  return (
-    <div style={{
-      position: "absolute",
-      top: 80,
-      right: 20,
-      width: 280,
-      background: "#fff",
-      borderRadius: 8,
-      boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
-      padding: "16px",
-      zIndex: 1000,
-    }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h4 style={{ margin: 0 }}>{region.NAME_1}</h4>
-        <button
-          onClick={onClose}
-          style={{
-            background: "transparent",
-            border: "none",
-            fontSize: 18,
-            cursor: "pointer",
-          }}
-          title="Закрыть"
-        >
-          ×
-        </button>
-      </div>
+    useEffect(() => {
+        if (!region) return;
 
-      <div style={{ marginTop: 12 }}>
-        <div><strong>Индекс активности:</strong> {Math.round(region.intensity * 100)}%</div>
+        const fetchCrops = async () => {
+            try {
+                const response = await fetch(`http://localhost:8080/api/trees/region-info/${region.id}/`);
+                const data = await response.json();
+                setCrops(data.crops || []);
+            } catch (err) {
+                console.error("Ошибка при загрузке культур региона:", err);
+                setCrops([]);
+            }
+        };
 
-      </div>
-    </div>
-  );
+        fetchCrops();
+    }, [region]);
+
+    if (!region) return null;
+
+    return (<div className="region-panel">
+        <div className="region-panel-header">
+            <h4>{region.NAME_1}</h4>
+            <button onClick={onClose} className="close-btn" title="Закрыть">×</button>
+        </div>
+
+        <div className="region-panel-body">
+            <div className="region-panel-index">
+                Индекс активности: <strong>{Math.round(region.intensity * 100)}%</strong>
+            </div>
+
+            <div className="region-panel-section">
+                Сейчас плодоносят:
+                {crops.length > 0 ? (<ul className="region-plant-list">
+                    {crops.map((plant, idx) => (<li key={idx}>{plant}</li>))}
+                </ul>) : (<div style={{fontSize: "13px", color: "#777", marginTop: "6px"}}>
+                    Нет плодоносящих культур
+                </div>)}
+            </div>
+        </div>
+    </div>);
 };
 
 export default RegionInfoPanel;

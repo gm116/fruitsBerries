@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
 import os
+from datetime import datetime
 from django.conf import settings
 
 from users.models import ActivityLog, Achievement, UserAchievement
@@ -116,6 +117,24 @@ def get_region_heatmap(request):
 
     return Response(data)
 
+@api_view(['GET'])
+def get_region_info(request, region_id):
+    month = int(request.GET.get('month', datetime.now().month))  # текущий месяц
+
+    try:
+        region = Region.objects.get(id=region_id)
+    except Region.DoesNotExist:
+        return Response({"error": "Регион не найден"}, status=404)
+
+    seasonality = Seasonality.objects.filter(region=region, months__contains=[month])
+    species_ids = seasonality.values_list("species_id", flat=True).distinct()
+    species = Species.objects.filter(id__in=species_ids).values_list("name", flat=True)
+
+    return Response({
+        "id": region.id,
+        "name": region.name_ru,
+        "crops": list(species)
+    })
 
 def check_achievements(user):
     user_achievements = UserAchievement.objects.filter(user=user)

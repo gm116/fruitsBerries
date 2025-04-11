@@ -33,6 +33,12 @@ const MapComponent = ({
         fetchTrees();
     }, []);
 
+    useEffect(() => {
+        if (!showRegions) {
+            setSelectedRegion(null);
+        }
+    }, [showRegions]);
+
     const handleMapClick = (e) => {
         if (!allowMapClick) return;
         const coords = e.get("coords");
