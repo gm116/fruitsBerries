@@ -84,6 +84,7 @@ const MapComponent = ({
 
                     <GeoJsonRegions
                         show={showRegions}
+                        allowMapClick={allowMapClick}
                         onRegionClick={setSelectedRegion}
                         selectedRegionId={selectedRegion?.id}
                     />

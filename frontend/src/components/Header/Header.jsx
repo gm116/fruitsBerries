@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, {useState, useEffect} from "react";
+import {useNavigate, useLocation} from "react-router-dom";
 import "./Header.css";
 
-const Header = ({ setShowAddTreeForm, toggleRegions }) => {
+const Header = ({setShowAddTreeForm, toggleRegions}) => {
     const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
     const navigate = useNavigate();
     const location = useLocation();
@@ -13,6 +13,7 @@ const Header = ({ setShowAddTreeForm, toggleRegions }) => {
 
     const handleLogout = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("refresh");
         setIsAuthenticated(false);
         navigate("/auth");
     };

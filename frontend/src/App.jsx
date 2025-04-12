@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, {useState, useEffect} from "react";
+import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import "./App.css";
 import Header from "./components/Header/Header";
 import MapComponent from "./components/Map/Map";
 import AuthPage from "./components/Auth/AuthPage";
 import ActivityFeed from "./components/ActivityFeed/ActivityFeed";
+import {refreshTokenIfNeeded} from "./utils/tokenService";
 
 const App = () => {
     const [selectedTree, setSelectedTree] = useState(null);
@@ -27,15 +28,23 @@ const App = () => {
         }
     };
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            refreshTokenIfNeeded();
+        }, 60 * 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
     return (
         <Router>
             <div className="App">
                 <Header
                     setShowAddTreeForm={handleCloseForm}
-                    toggleRegions={() => setShowRegions(prev => !prev)}
+                    toggleRegions={() => setShowRegions((prev) => !prev)}
                 />
                 <Routes>
-                    <Route path="/auth" element={<AuthPage />} />
+                    <Route path="/auth" element={<AuthPage/>}/>
                     <Route
                         path="/"
                         element={

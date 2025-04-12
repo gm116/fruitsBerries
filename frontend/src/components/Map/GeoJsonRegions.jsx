@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {GeoObject} from "@pbe/react-yandex-maps";
 
-const GeoJsonRegions = ({show, onRegionClick, selectedRegionId}) => {
+const GeoJsonRegions = ({show, onRegionClick, selectedRegionId, allowMapClick}) => {
     const [features, setFeatures] = useState([]);
 
     useEffect(() => {
@@ -82,9 +82,9 @@ const GeoJsonRegions = ({show, onRegionClick, selectedRegionId}) => {
                             strokeColor: isSelected ? "#ff9900" : "#000000",
                             strokeWidth: isSelected ? 3 : 1,
                             strokeOpacity: 0.7,
-                            interactivityModel: "default#geoObject",
+                            interactivityModel: allowMapClick ? "default#transparent" : "default#geoObject",
                         }}
-                        onClick={() => onRegionClick && onRegionClick(feature.properties)}
+                        onClick={() => !allowMapClick && onRegionClick && onRegionClick(feature.properties)}
                     />
                 );
             })}

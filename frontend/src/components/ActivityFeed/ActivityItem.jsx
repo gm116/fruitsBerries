@@ -3,7 +3,7 @@ import "./ActivityItem.css";
 
 const ActivityItem = ({ action, user, datetime }) => {
   const formattedTime = new Date(datetime).toLocaleString("ru-RU", {
-    day: "numeric",
+    day: "2-digit",
     month: "short",
     hour: "2-digit",
     minute: "2-digit",
@@ -14,12 +14,12 @@ const ActivityItem = ({ action, user, datetime }) => {
     : `http://localhost:8080/media/avatars/default_avatar.png`;
 
   return (
-    <div className="activity-item fade-in">
+    <div className="activity-item">
       <img src={avatarUrl} alt="аватар" className="avatar" />
       <div className="content">
-        <p>
+        <span>
           <strong>{user?.username || "Неизвестный"}</strong> {action}
-        </p>
+        </span>
         <span className="timestamp">{formattedTime}</span>
       </div>
     </div>

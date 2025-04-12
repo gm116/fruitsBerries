@@ -59,7 +59,7 @@ def add_plant(request):
             plant.save()
 
             check_achievements(user)
-            ActivityLog.objects.create(user=user, action=f"добавил: {plant.name}")
+            ActivityLog.objects.create(user=user, action=f"добавил: {plant.species.name}")
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

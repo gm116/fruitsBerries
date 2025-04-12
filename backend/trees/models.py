@@ -16,15 +16,16 @@ class Species(models.Model):
 
 class Plant(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
-    species = models.ForeignKey(Species, on_delete=models.CASCADE)
+    description = models.CharField(max_length=255, blank=True, null=True)
+    species = models.ForeignKey("Species", on_delete=models.CASCADE)
     latitude = models.FloatField()
     longitude = models.FloatField()
     image_url = models.CharField(max_length=255, blank=True, null=True)
     region = models.ForeignKey("Region", null=True, blank=True, on_delete=models.SET_NULL)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.name
+        return self.species.name
 
 class Region(models.Model):
     gid_0 = models.CharField(max_length=10)

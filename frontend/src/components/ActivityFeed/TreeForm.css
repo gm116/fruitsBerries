@@ -1,0 +1,109 @@
+.tree-form-container {
+  background-color: #fafafa;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.tree-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tree-form h2 {
+  margin: 0 0 10px;
+  font-size: 20px;
+  color: #333;
+}
+
+.tree-form label {
+  font-size: 14px;
+  color: #555;
+}
+
+.tree-form input,
+.tree-form select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-top: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tree-form select {
+  background-color: #fff;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg fill='gray' height='16' viewBox='0 0 24 24' width='16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 14px;
+  cursor: pointer;
+}
+
+.tree-form select:hover {
+  border-color: #28a745;
+}
+
+.tree-form select:focus {
+  outline: none;
+  border-color: #218838;
+  box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.3);
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.tree-form button {
+  padding: 10px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s;
+}
+
+.tree-form button[type="submit"] {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.tree-form button[type="submit"]:hover {
+  background-color: #218838;
+}
+
+.tree-form .cancel-button {
+  background-color: #d9534f;
+  color: #fff;
+}
+
+.tree-form .cancel-button:hover {
+  background-color: #c9302c;
+}
+
+.error {
+  color: #d9534f;
+  font-size: 14px;
+}
+
+.success {
+  color: #28a745;
+  font-size: 14px;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
