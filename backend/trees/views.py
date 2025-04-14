@@ -1,7 +1,7 @@
 from .models import Plant, Species, Region, Seasonality
 from .serializers import PlantSerializer, RegionSerializer
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -25,44 +25,46 @@ def get_species(request):
     return Response(species, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_plant(request):
-    if request.method == 'POST':
-        user = request.user
-        if not user or user.is_anonymous:
-            return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+    user = request.user
+    serializer = PlantSerializer(data=request.data)
 
-        serializer = PlantSerializer(data=request.data)
-        if serializer.is_valid():
-            plant = serializer.save(user=user)
+    if serializer.is_valid():
+        plant = serializer.save(user=user)
 
-            latitude = serializer.validated_data.get("latitude")
-            longitude = serializer.validated_data.get("longitude")
+        latitude = serializer.validated_data.get("latitude")
+        longitude = serializer.validated_data.get("longitude")
 
-            matched_region = None
-            for region in Region.objects.all():
-                geom = region.geometry
-                if geom["type"] == "Polygon":
-                    for ring in geom["coordinates"]:
+        matched_region = None
+        for region in Region.objects.all():
+            geom = region.geometry
+            if geom["type"] == "Polygon":
+                for ring in geom["coordinates"]:
+                    if point_in_polygon(longitude, latitude, ring):
+                        matched_region = region
+                        break
+            elif geom["type"] == "MultiPolygon":
+                for polygon in geom["coordinates"]:
+                    for ring in polygon:
                         if point_in_polygon(longitude, latitude, ring):
                             matched_region = region
                             break
-                elif geom["type"] == "MultiPolygon":
-                    for polygon in geom["coordinates"]:
-                        for ring in polygon:
-                            if point_in_polygon(longitude, latitude, ring):
-                                matched_region = region
-                                break
-                if matched_region:
-                    break
+            if matched_region:
+                break
 
+        if matched_region:
             plant.region = matched_region
-            plant.save()
+            plant.save(update_fields=["region"])
+            matched_region.planted_count = (matched_region.planted_count or 0) + 1
+            matched_region.save(update_fields=["planted_count"])
 
             check_achievements(user)
             ActivityLog.objects.create(user=user, action=f"добавил: {plant.species.name}")
 
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
@@ -76,7 +78,6 @@ def get_regions(request):
 def get_region_heatmap(request):
     data = []
     raw_scores = {}
-
 
     for region in Region.objects.all():
         seasonality = Seasonality.objects.filter(region=region)
@@ -93,7 +94,6 @@ def get_region_heatmap(request):
             "region": region,
             "score": score
         }
-
 
     all_scores = [entry["score"] for entry in raw_scores.values()]
     min_score = min(all_scores) if all_scores else 0
@@ -156,7 +156,7 @@ def check_achievements(user):
                 species_count = Plant.objects.filter(user=user).values("species").distinct().count()
                 user_achievement.progress = species_count
             elif achievement.condition == "add_5_bushes":
-                berry_count = Plant.objects.filter(user=user, species__category="Bush").count()
+                berry_count = Plant.objects.filter(user=user, species__category="bush").count()
                 user_achievement.progress = berry_count
             elif achievement.condition == "add_10_locations":
                 region_count = Plant.objects.filter(user=user).values("latitude", "longitude").distinct().count()

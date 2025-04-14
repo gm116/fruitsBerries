@@ -5,6 +5,7 @@ import Header from "./components/Header/Header";
 import MapComponent from "./components/Map/Map";
 import AuthPage from "./components/Auth/AuthPage";
 import ActivityFeed from "./components/ActivityFeed/ActivityFeed";
+import Profile from "./components/Profile/Profile";
 import {refreshTokenIfNeeded} from "./utils/tokenService";
 
 const App = () => {
@@ -45,6 +46,8 @@ const App = () => {
                 />
                 <Routes>
                     <Route path="/auth" element={<AuthPage/>}/>
+                    <Route path="/user" element={<Profile isOwnProfile={true}/>}/>
+                    <Route path="/user/:id" element={<Profile isOwnProfile={false}/>}/>
                     <Route
                         path="/"
                         element={

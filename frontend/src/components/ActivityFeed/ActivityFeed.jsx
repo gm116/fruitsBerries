@@ -12,7 +12,7 @@ const ActivityFeed = ({selectedTree, showAddTreeForm, setShowAddTreeForm, clicke
     const [imageFile, setImageFile] = useState(null);
 
     const [plantData, setPlantData] = useState({
-        name: "",
+        description: "",
         species: "",
         latitude: "",
         longitude: "",
@@ -113,13 +113,16 @@ const ActivityFeed = ({selectedTree, showAddTreeForm, setShowAddTreeForm, clicke
                 return;
             }
         }
-
         const payload = {
-            ...plantData,
+            description: plantData.description,
+            species: plantData.species,
+            latitude: parseFloat(plantData.latitude),
+            longitude: parseFloat(plantData.longitude),
             ...(uploadedImageUrl ? {image_url: uploadedImageUrl} : {}),
         };
 
         try {
+
             const response = await fetch("http://localhost:8080/api/trees/add/", {
                 method: "POST",
                 headers: {

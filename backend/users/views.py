@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -9,7 +10,7 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import User, Achievement, UserAchievement, ActivityLog
-from .serializers import UserSerializer, ActivityLogSerializer
+from .serializers import UserSerializer, ActivityLogSerializer, PublicUserSerializer
 
 
 @api_view(['POST'])
@@ -78,3 +79,18 @@ def get_activity_feed(request):
 @permission_classes([IsAuthenticated])
 def check_token(request):
     return Response({"detail": "Token is valid"}, status=200)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_user_profile(request):
+    user_id = request.query_params.get('user_id')
+
+    if user_id:
+        user = get_object_or_404(User, id=user_id)
+    elif request.user.is_authenticated:
+        user = request.user
+    else:
+        return Response({"detail": "Не авторизован"}, status=status.HTTP_401_UNAUTHORIZED)
+
+    serializer = PublicUserSerializer(user, context={'request': request})
+    return Response(serializer.data)

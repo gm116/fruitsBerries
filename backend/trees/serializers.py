@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import Species, Plant, Region
-from users.serializers import UserSerializer
 
 
 class TreeSpeciesSerializer(serializers.ModelSerializer):
@@ -12,7 +11,6 @@ class TreeSpeciesSerializer(serializers.ModelSerializer):
 class PlantSerializer(serializers.ModelSerializer):
     species_name = serializers.CharField(source="species.category", read_only=True)
     species_title = serializers.CharField(source="species.name", read_only=True)
-    user = UserSerializer(read_only=True)
 
     class Meta:
         model = Plant
@@ -28,6 +26,13 @@ class PlantSerializer(serializers.ModelSerializer):
             'created_at',
             'user',
         ]
+        read_only_fields = ['id', 'created_at', 'user']
+
+    def to_representation(self, instance):
+        from users.serializers import UserSerializer
+        rep = super().to_representation(instance)
+        rep['user'] = UserSerializer(instance.user).data
+        return rep
 
 
 class RegionSerializer(serializers.ModelSerializer):

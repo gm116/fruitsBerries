@@ -7,7 +7,7 @@ const TreeForm = ({
   handleInputChange,
   handleImageChange,
   handleFormSubmit,
-  onCancel
+  onCancel,
 }) => {
   return (
     <div className="tree-form-container">
@@ -22,7 +22,9 @@ const TreeForm = ({
             onChange={handleInputChange}
             required
           >
-            <option value="" disabled>Выберите вид</option>
+            <option value="" disabled>
+              Выберите вид
+            </option>
             {speciesList.map((species) => (
               <option key={species.id} value={species.id}>
                 {species.name}
