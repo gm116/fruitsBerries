@@ -4,6 +4,7 @@ import "./Map.css";
 import GeoJsonRegions from "./GeoJsonRegions";
 import {defaultMapConfig} from "./MapConfig";
 import RegionInfoPanel from "./RegionInfoPanel";
+import PlantFilter from "./PlantFilter";
 
 const MapComponent = ({
                           onTreeSelect,
@@ -14,6 +15,7 @@ const MapComponent = ({
                       }) => {
     const {center, zoom} = defaultMapConfig;
     const [trees, setTrees] = useState([]);
+    const [filteredSpecies, setFilteredSpecies] = useState([]);
     const mapRef = useRef(null);
     const [mapInstance, setMapInstance] = useState(null);
     const [selectedRegion, setSelectedRegion] = useState(null);
@@ -67,13 +69,19 @@ const MapComponent = ({
                         setMapInstance(ref);
                     }}
                 >
-                    {trees.map((tree) => (
-                        <Placemark
-                            key={tree.id}
-                            geometry={[tree.latitude, tree.longitude]}
-                            onClick={() => handlePlacemarkClick(tree)}
-                        />
-                    ))}
+                    {trees
+                        .filter((tree) =>
+                            filteredSpecies.length === 0
+                                ? false
+                                : filteredSpecies.includes(tree.species)
+                        )
+                        .map((tree) => (
+                            <Placemark
+                                key={tree.id}
+                                geometry={[tree.latitude, tree.longitude]}
+                                onClick={() => handlePlacemarkClick(tree)}
+                            />
+                        ))}
 
                     {allowMapClick && tempMarkerCoords && (
                         <Placemark
@@ -95,6 +103,7 @@ const MapComponent = ({
                 region={selectedRegion}
                 onClose={() => setSelectedRegion(null)}
             />
+            <PlantFilter onFilterChange={setFilteredSpecies}/>
         </div>
     );
 };
