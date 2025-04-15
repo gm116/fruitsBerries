@@ -10,6 +10,8 @@ const ActivityFeed = ({selectedTree, showAddTreeForm, setShowAddTreeForm, clicke
     const [error, setError] = useState("");
     const [speciesList, setSpeciesList] = useState([]);
     const [imageFile, setImageFile] = useState(null);
+    const [message, setMessage] = useState("");
+    const [messageType, setMessageType] = useState("");
 
     const [plantData, setPlantData] = useState({
         description: "",
@@ -64,6 +66,16 @@ const ActivityFeed = ({selectedTree, showAddTreeForm, setShowAddTreeForm, clicke
         fetchSpecies();
     }, []);
 
+    useEffect(() => {
+        if (message) {
+            const timeout = setTimeout(() => {
+                setMessage("");
+                setMessageType("");
+            }, 4000);
+            return () => clearTimeout(timeout);
+        }
+    }, [message]);
+
     const toggleFeed = () => setFeedOpen(!isFeedOpen);
 
     const handleInputChange = (e) => {
@@ -99,9 +111,11 @@ const ActivityFeed = ({selectedTree, showAddTreeForm, setShowAddTreeForm, clicke
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
+        setMessage("");
         const token = localStorage.getItem("token");
         if (!token) {
-            alert("Пользователь не авторизован! Пожалуйста, войдите в систему.");
+            setMessage("Пожалуйста, войдите в систему.");
+            setMessageType("error");
             return;
         }
 
@@ -109,10 +123,12 @@ const ActivityFeed = ({selectedTree, showAddTreeForm, setShowAddTreeForm, clicke
         if (imageFile) {
             uploadedImageUrl = await uploadImage();
             if (!uploadedImageUrl) {
-                alert("Не удалось загрузить изображение.");
+                setMessage("Не удалось загрузить изображение.");
+                setMessageType("error");
                 return;
             }
         }
+
         const payload = {
             description: plantData.description,
             species: plantData.species,
@@ -122,7 +138,6 @@ const ActivityFeed = ({selectedTree, showAddTreeForm, setShowAddTreeForm, clicke
         };
 
         try {
-
             const response = await fetch("http://localhost:8080/api/trees/add/", {
                 method: "POST",
                 headers: {
@@ -133,13 +148,19 @@ const ActivityFeed = ({selectedTree, showAddTreeForm, setShowAddTreeForm, clicke
             });
 
             const data = await response.json();
-            if (response.ok) {
-                setShowAddTreeForm(false);
-            } else {
-                alert(data);
+            if (!response.ok) {
+                setMessage(data.detail || data.error || "Ошибка при добавлении растения.");
+                setMessageType("error");
+                return;
             }
+
+            setShowAddTreeForm(false);
+            setMessage("Растение успешно добавлено!");
+            setMessageType("success");
         } catch (error) {
             console.error("Ошибка добавления растения:", error);
+            setMessage("Произошла ошибка при добавлении.");
+            setMessageType("error");
         }
     };
 
@@ -155,6 +176,12 @@ const ActivityFeed = ({selectedTree, showAddTreeForm, setShowAddTreeForm, clicke
 
             {isFeedOpen && (
                 <>
+                    {message && (
+                        <div className={`alert ${messageType === "success" ? "alert-success" : "alert-error"}`}>
+                            {message}
+                        </div>
+                    )}
+
                     {showAddTreeForm ? (
                         <TreeForm
                             plantData={plantData}

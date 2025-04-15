@@ -50,3 +50,24 @@
     padding: 0 8px;
     box-sizing: border-box;
 }
+
+.alert {
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  border: 1px solid;
+}
+
+.alert-success {
+  background-color: #e7f9ec;
+  color: #2e7d32;
+  border-color: #b7e3c4;
+}
+
+.alert-error {
+  background-color: #fdecea;
+  color: #d32f2f;
+  border-color: #f5c6cb;
+}

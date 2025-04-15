@@ -11,7 +11,7 @@ from datetime import datetime
 from django.conf import settings
 
 from users.models import ActivityLog, Achievement, UserAchievement
-from .utils import point_in_polygon
+from .utils import point_in_polygon, is_valid_plant_image
 
 @api_view(['GET'])
 def get_plants(request):
@@ -31,6 +31,13 @@ def add_plant(request):
     serializer = PlantSerializer(data=request.data)
 
     if serializer.is_valid():
+        image_url = serializer.validated_data.get("image_url")
+        if image_url:
+            relative_path = image_url.replace(settings.MEDIA_URL, "").lstrip("/")
+            image_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+
+            if not is_valid_plant_image(image_path):
+                return Response({"error": "Изображение не похоже на растение."}, status=400)
         plant = serializer.save(user=user)
 
         latitude = serializer.validated_data.get("latitude")
