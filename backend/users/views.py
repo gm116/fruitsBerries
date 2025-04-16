@@ -9,7 +9,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import User, Achievement, UserAchievement, ActivityLog
+from .models import User, Achievement, UserAchievement, ActivityLog, Reviews
 from .serializers import UserSerializer, ActivityLogSerializer, PublicUserSerializer
 
 
@@ -94,3 +94,30 @@ def get_user_profile(request):
 
     serializer = PublicUserSerializer(user, context={'request': request})
     return Response(serializer.data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def leave_review(request):
+    to_user_id = request.data.get("to_user")
+    is_positive = request.data.get("is_positive")
+    comment = request.data.get("comment", "").strip()
+
+    if to_user_id is None or is_positive is None:
+        return Response({"detail": "Недостаточно данных для создания отзыва."}, status=400)
+
+    if str(request.user.id) == str(to_user_id):
+        return Response({"detail": "Нельзя оставить отзыв самому себе."}, status=400)
+
+    to_user = get_object_or_404(User, id=to_user_id)
+
+    if Reviews.objects.filter(from_user=request.user, to_user=to_user).exists():
+        return Response({"detail": "Вы уже оставили отзыв этому пользователю."}, status=400)
+
+    Reviews.objects.create(
+        from_user=request.user,
+        to_user=to_user,
+        is_positive=bool(is_positive),
+        comment=comment
+    )
+
+    return Response({"detail": "Отзыв успешно добавлен."}, status=201)
