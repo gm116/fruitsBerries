@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import "./AuthPage.css";
 
 const LoginForm = () => {
@@ -22,13 +22,14 @@ const LoginForm = () => {
             const data = await response.json();
 
             if (response.ok) {
-                setError("Успешный вход!");
-                // setToken(data.access);
-                navigate("/");
                 localStorage.setItem("token", data.access);
+                localStorage.setItem("refresh", data.refresh);
+
+                setError("");
+                navigate("/");
                 // alert(localStorage.getItem("token"))
             } else {
-                setError("Ошибка входа");
+                setError(data.detail || "Ошибка входа");
             }
         } catch (error) {
             setError("Ошибка связи с сервером");

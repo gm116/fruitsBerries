@@ -30,10 +30,8 @@ const App = () => {
     };
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            refreshTokenIfNeeded();
-        }, 60 * 1000);
-
+        refreshTokenIfNeeded();
+        const interval = setInterval(refreshTokenIfNeeded, 60 * 1000);
         return () => clearInterval(interval);
     }, []);
 
