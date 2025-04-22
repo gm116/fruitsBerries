@@ -74,6 +74,19 @@ def add_plant(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_plant(request, plant_id):
+    try:
+        plant = Plant.objects.get(id=plant_id, user=request.user)
+    except Plant.DoesNotExist:
+        return Response({"detail": "Объект не найден или доступ запрещён."}, status=404)
+
+    plant.delete()
+    ActivityLog.objects.create(user=request.user, action=f"удалил растение")
+    return Response({"detail": "Растение удалено."}, status=204)
+
+
 @api_view(['GET'])
 def get_regions(request):
     regions = Region.objects.all()

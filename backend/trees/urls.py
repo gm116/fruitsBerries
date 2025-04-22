@@ -10,4 +10,5 @@ urlpatterns = [
     path('get-regions/', views.get_regions, name='get-regions'),
     path("heatmap/", views.get_region_heatmap),
     path('region-info/<int:region_id>/', views.get_region_info, name='region-info'),
+    path('delete/<int:plant_id>/', views.delete_plant, name='delete-plant'),
 ]

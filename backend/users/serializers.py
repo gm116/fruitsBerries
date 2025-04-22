@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import User, Achievement, ActivityLog, UserAchievement, Reviews
+from .models import User, Achievement, ActivityLog, UserAchievement
 from trees.models import Plant
+from trees.serializers import PlantSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -48,10 +49,11 @@ class PublicUserSerializer(serializers.ModelSerializer):
     achievements = serializers.SerializerMethodField()
     rating = serializers.SerializerMethodField()
     reviews = serializers.SerializerMethodField()
+    trees = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'profile_picture', 'total_plants', 'achievements', 'rating', 'reviews']
+        fields = ['id', 'username', 'profile_picture', 'total_plants', 'achievements', 'rating', 'reviews', 'trees']
 
     def get_total_plants(self, obj):
         return Plant.objects.filter(user=obj).count()
@@ -84,3 +86,7 @@ class PublicUserSerializer(serializers.ModelSerializer):
                 "from_username": r.from_user.username
             } for r in reviews
         ]
+
+    def get_trees(self, obj):
+        trees = Plant.objects.filter(user=obj).order_by("-created_at")
+        return PlantSerializer(trees, many=True, context=self.context).data

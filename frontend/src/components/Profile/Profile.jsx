@@ -32,6 +32,32 @@ const Profile = () => {
     navigate("/auth");
   };
 
+  const handleDeleteTree = async (treeId) => {
+    const confirmDelete = window.confirm("Удалить это дерево?");
+    if (!confirmDelete) return;
+
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch(`http://localhost:8080/api/trees/delete/${treeId}/`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok) {
+        setUserData((prev) => ({
+          ...prev,
+          trees: prev.trees.filter((t) => t.id !== treeId),
+        }));
+      } else {
+        alert("Ошибка при удалении");
+      }
+    } catch (err) {
+      console.error("Ошибка удаления:", err);
+    }
+  };
+
 const handleSubmitReview = async (e) => {
   e.preventDefault();
   const token = localStorage.getItem("token");
@@ -124,6 +150,14 @@ const handleSubmitReview = async (e) => {
                   <p className="user-profile-tree-coords">
                     📍 {tree.latitude}, {tree.longitude}
                   </p>
+                  {isOwner && (
+                    <button
+                      className="delete-tree-btn"
+                      onClick={() => handleDeleteTree(tree.id)}
+                    >
+                      Удалить
+                    </button>
+                  )}
                 </div>
               ))
             ) : (
