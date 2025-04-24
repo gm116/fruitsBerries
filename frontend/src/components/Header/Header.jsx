@@ -35,6 +35,7 @@ const Header = ({ setShowAddTreeForm, toggleRegions }) => {
         {isAuthenticated ? (
           <>
             <button onClick={() => navigate("/user")}>Профиль</button>
+            <button onClick={() => navigate("/events")}>Мероприятия</button>
             <button className="add-plant-btn" onClick={() => setShowAddTreeForm(true)}>
               Добавить растение
             </button>

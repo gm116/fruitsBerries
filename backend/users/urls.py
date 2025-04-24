@@ -11,4 +11,9 @@ urlpatterns = [
     path('check-token/', check_token),
     path('profile/', get_user_profile, name='user-profile'),
     path('leave-review/', leave_review, name='leave-review'),
+    path('events/', views.get_all_events, name='get-all-events'),
+    path('events/create/', views.create_event, name='create-event'),
+    path('events/<int:event_id>/join/', views.join_event, name='join-event'),
+    path('events/<int:event_id>/delete/', views.delete_event, name='delete-event'),
+    path('events/<int:event_id>/leave/', views.leave_event, name='leave-event'),
 ]

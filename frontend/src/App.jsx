@@ -7,6 +7,7 @@ import AuthPage from "./components/Auth/AuthPage";
 import ActivityFeed from "./components/ActivityFeed/ActivityFeed";
 import Profile from "./components/Profile/Profile";
 import {refreshTokenIfNeeded} from "./utils/tokenService";
+import EventsPage from "./components/Events/EventsPage";
 
 const App = () => {
     const [selectedTree, setSelectedTree] = useState(null);
@@ -46,6 +47,7 @@ const App = () => {
                     <Route path="/auth" element={<AuthPage/>}/>
                     <Route path="/user" element={<Profile isOwnProfile={true}/>}/>
                     <Route path="/user/:id" element={<Profile isOwnProfile={false}/>}/>
+                    <Route path="/events" element={<EventsPage />} />
                     <Route
                         path="/"
                         element={

@@ -9,8 +9,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import User, Achievement, UserAchievement, ActivityLog, Reviews
-from .serializers import UserSerializer, ActivityLogSerializer, PublicUserSerializer
+from .models import User, Achievement, UserAchievement, ActivityLog, Reviews, EcoEvent
+from .serializers import UserSerializer, ActivityLogSerializer, PublicUserSerializer, EcoEventSerializer
 
 
 @api_view(['POST'])
@@ -80,6 +80,7 @@ def get_activity_feed(request):
 def check_token(request):
     return Response({"detail": "Token is valid"}, status=200)
 
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_user_profile(request):
@@ -94,6 +95,7 @@ def get_user_profile(request):
 
     serializer = PublicUserSerializer(user, context={'request': request})
     return Response(serializer.data)
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -121,3 +123,51 @@ def leave_review(request):
     )
 
     return Response({"detail": "Отзыв успешно добавлен."}, status=201)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_all_events(request):
+    events = EcoEvent.objects.all().order_by('-start_datetime')
+    serializer = EcoEventSerializer(events, many=True, context={"request": request})
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_event(request):
+    serializer = EcoEventSerializer(data=request.data, context={"request": request})
+    if serializer.is_valid():
+        event = serializer.save(created_by=request.user)
+        event.participants.add(request.user)
+        return Response(EcoEventSerializer(event, context={"request": request}).data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def join_event(request, event_id):
+    event = get_object_or_404(EcoEvent, id=event_id)
+    if request.user in event.participants.all():
+        return Response({"detail": "Вы уже участвуете в этом мероприятии."}, status=status.HTTP_200_OK)
+
+    event.participants.add(request.user)
+    return Response({"detail": "Вы присоединились к мероприятию."}, status=status.HTTP_200_OK)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_event(request, event_id):
+    event = get_object_or_404(EcoEvent, id=event_id)
+    if request.user != event.created_by:
+        return Response({"detail": "Вы не можете удалить это мероприятие."}, status=403)
+
+    event.delete()
+    return Response({"detail": "Мероприятие удалено."}, status=204)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def leave_event(request, event_id):
+    event = get_object_or_404(EcoEvent, id=event_id)
+    event.participants.remove(request.user)
+    return Response({"detail": "Вы покинули мероприятие."}, status=200)

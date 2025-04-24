@@ -1,12 +1,12 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
 from django.conf import settings
-
+from datetime import timedelta
 
 
 def user_avatar_path(instance, filename):
     return f"avatars/user_{instance.id}/{filename}"
+
 
 class User(AbstractUser):
     email = models.EmailField(max_length=254, unique=True)
@@ -67,3 +67,18 @@ class Reviews(models.Model):
 
     class Meta:
         unique_together = ("from_user", "to_user")
+
+
+class EcoEvent(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    location = models.CharField(max_length=255)
+    start_datetime = models.DateTimeField()
+    end_datetime = models.DateTimeField(blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    participants = models.ManyToManyField(User, related_name="participated_events")
+
+    def save(self, *args, **kwargs):
+        if not self.end_datetime:
+            self.end_datetime = self.start_datetime + timedelta(days=1)
+        super().save(*args, **kwargs)

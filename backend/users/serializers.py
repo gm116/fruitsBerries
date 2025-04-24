@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Achievement, ActivityLog, UserAchievement
+from .models import User, Achievement, ActivityLog, UserAchievement, EcoEvent
 from trees.models import Plant
 from trees.serializers import PlantSerializer
 
@@ -90,3 +90,19 @@ class PublicUserSerializer(serializers.ModelSerializer):
     def get_trees(self, obj):
         trees = Plant.objects.filter(user=obj).order_by("-created_at")
         return PlantSerializer(trees, many=True, context=self.context).data
+
+
+class UserShortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username']
+
+
+class EcoEventSerializer(serializers.ModelSerializer):
+    created_by = UserShortSerializer(read_only=True)
+    participants = UserShortSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = EcoEvent
+        fields = ['id', 'title', 'description', 'location', 'start_datetime', 'end_datetime', 'created_by', 'participants']
+        read_only_fields = ['id', 'created_by', 'end_datetime', 'participants']
