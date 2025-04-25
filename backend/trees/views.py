@@ -16,7 +16,7 @@ from .utils import point_in_polygon, is_valid_plant_image
 @api_view(['GET'])
 def get_plants(request):
     plants = Plant.objects.all()
-    serializer = PlantSerializer(plants, many=True)
+    serializer = PlantSerializer(plants, many=True, context={"request": request})
     return Response(serializer.data)
 
 @api_view(['GET'])

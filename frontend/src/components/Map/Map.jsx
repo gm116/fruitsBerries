@@ -62,6 +62,13 @@ const MapComponent = ({
             <YMaps query={{apikey: process.env.REACT_APP_YMAPS_API_KEY}}>
                 <Map
                     defaultState={{center, zoom}}
+                    options={{
+                        minZoom: 3,
+                        maxZoom: 17,
+                        yandexMapDisablePoiInteractivity: true,
+                        suppressMapOpenBlock: true,
+                    }}
+                    modules={["control.ZoomControl", "control.FullscreenControl", "geoObject.addon.hint",]}
                     className="map"
                     onClick={handleMapClick}
                     instanceRef={(ref) => {
@@ -80,6 +87,19 @@ const MapComponent = ({
                                 key={tree.id}
                                 geometry={[tree.latitude, tree.longitude]}
                                 onClick={() => handlePlacemarkClick(tree)}
+                                properties={{
+                                    hintContent: `<strong>${tree.species_title}</strong><br/>${
+                                        tree.fruiting_months?.length
+                                            ? `Плодоносит: ${tree.fruiting_months.join(", ")}`
+                                            : "Нет данных по плодоношению"
+                                    }`,
+                                }}
+                                options={{
+                                    iconLayout: 'default#image',
+                                    iconImageHref: tree.icon_url || undefined,
+                                    iconImageSize: [30, 30],
+                                    iconImageOffset: [-15, -15],
+                                }}
                             />
                         ))}
 
