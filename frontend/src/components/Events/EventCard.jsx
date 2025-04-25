@@ -1,9 +1,7 @@
-import React, {useState} from "react";
+import React from "react";
 import "./EventCard.css";
 
 const EventCard = ({event, currentUserId, onJoin, onLeave, onDelete}) => {
-    const [toast, setToast] = useState(null);
-
     const isCreator = event.created_by?.id === currentUserId;
     const isParticipant = event.participants?.some((p) => p.id === currentUserId);
 
@@ -19,28 +17,6 @@ const EventCard = ({event, currentUserId, onJoin, onLeave, onDelete}) => {
         });
     };
 
-    const showToast = (message) => {
-        setToast(message);
-        setTimeout(() => setToast(null), 3000);
-    };
-
-    const handleDelete = () => {
-        if (window.confirm("Вы уверены, что хотите удалить мероприятие?")) {
-            onDelete(event.id);
-            showToast("Мероприятие удалено");
-        }
-    };
-
-    const handleLeave = () => {
-        onLeave(event.id);
-        showToast("Вы покинули мероприятие");
-    };
-
-    const handleJoin = () => {
-        onJoin(event.id);
-        showToast("Вы присоединились к мероприятию");
-    };
-
     return (
         <div className="event-card">
             <div className="event-card-content">
@@ -52,15 +28,19 @@ const EventCard = ({event, currentUserId, onJoin, onLeave, onDelete}) => {
 
             <div className="event-card-footer">
                 {isCreator ? (
-                    <button onClick={handleDelete} className="event-btn delete">Удалить</button>
+                    <button onClick={() => onDelete(event.id)} className="event-btn delete">
+                        Удалить
+                    </button>
                 ) : isParticipant ? (
-                    <button onClick={handleLeave} className="event-btn leave">Выйти</button>
+                    <button onClick={() => onLeave(event.id)} className="event-btn leave">
+                        Выйти
+                    </button>
                 ) : (
-                    <button onClick={handleJoin} className="event-btn join">Присоединиться</button>
+                    <button onClick={() => onJoin(event.id)} className="event-btn join">
+                        Присоединиться
+                    </button>
                 )}
             </div>
-
-            {toast && <div className="toast">{toast}</div>}
         </div>
     );
 };
