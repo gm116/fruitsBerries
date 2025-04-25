@@ -30,6 +30,10 @@ const App = () => {
         }
     };
 
+    const toggleRegions = () => {
+        setShowRegions(prev => !prev);
+    };
+
     useEffect(() => {
         refreshTokenIfNeeded();
         const interval = setInterval(refreshTokenIfNeeded, 60 * 1000);
@@ -41,7 +45,8 @@ const App = () => {
             <div className="App">
                 <Header
                     setShowAddTreeForm={handleCloseForm}
-                    toggleRegions={() => setShowRegions((prev) => !prev)}
+                    toggleRegions={toggleRegions}
+                    regionsVisible={showRegions}
                 />
                 <Routes>
                     <Route path="/auth" element={<AuthPage/>}/>
