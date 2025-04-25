@@ -1,177 +1,194 @@
 .user-profile-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  padding: 24px 24px 100px;
-  font-family: "Inter", sans-serif;
-  overflow-y: auto;
-  box-sizing: border-box;
-  background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 24px 24px 100px;
+    font-family: "Inter", sans-serif;
+    overflow-y: auto;
+    box-sizing: border-box;
+    background: #fafafa;
 }
 
 .user-profile-header {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  background-color: #f3f3f3;
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 32px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    background-color: #f3f3f3;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 32px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
 .user-profile-avatar {
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #2e7d32;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #2e7d32;
 }
 
 .user-profile-details {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
 .user-profile-details h2 {
-  margin: 0;
-  font-size: 24px;
+    margin: 0;
+    font-size: 24px;
 }
 
 .user-profile-bio,
 .user-profile-rating {
-  font-size: 14px;
-  color: #666;
+    font-size: 14px;
+    color: #666;
 }
 
 .user-profile-logout-btn {
-  background-color: #d32f2f;
-  color: white;
-  padding: 8px 14px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  margin-top: 8px;
+    background-color: #d32f2f;
+    color: white;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 8px;
 }
 
 .user-profile-content {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    flex: 1;
 }
 
 .user-profile-section {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  margin-bottom: 10px;
-  min-height: 120px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    margin-bottom: 10px;
+    min-height: 120px;
 }
 
 .user-profile-section h3 {
-  margin-top: 0;
-  margin-bottom: 16px;
-  font-size: 18px;
-  color: #333;
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 18px;
+    color: #333;
 }
 
 .user-profile-achievement-list,
 .user-profile-tree-list,
 .user-profile-review-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
 }
 
 .user-profile-achievement-card,
 .user-profile-tree-card,
 .review-card {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  padding: 14px;
-  font-size: 14px;
-  box-sizing: border-box;
-  transition: all 0.2s ease;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    padding: 14px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
 }
 
 .user-profile-achievement-card h4,
 .user-profile-tree-card h4 {
-  margin: 0 0 6px;
-  font-size: 15px;
-  color: #2e7d32;
+    margin: 0 0 6px;
+    font-size: 15px;
+    color: #2e7d32;
 }
 
 .user-profile-tree-card img {
-  width: 100%;
-  height: 140px;
-  object-fit: cover;
-  border-radius: 6px;
-  margin-bottom: 8px;
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 8px;
 }
 
 .user-profile-tree-coords {
-  font-size: 12px;
-  color: #555;
-  font-family: monospace;
+    font-size: 12px;
+    color: #555;
+    font-family: monospace;
 }
 
 .review-card.positive {
-  border-left: 4px solid #2e7d32;
+    border-left: 4px solid #2e7d32;
 }
 
 .review-card.negative {
-  border-left: 4px solid #d32f2f;
+    border-left: 4px solid #d32f2f;
 }
 
 .user-profile-review-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-width: 300px;
-  margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 300px;
+    margin-top: 16px;
 }
 
 .user-profile-review-form select,
 .user-profile-review-form textarea {
-  font-family: "Inter", sans-serif;
-  padding: 8px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+    font-family: "Inter", sans-serif;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
 }
 
 .user-profile-review-form button {
-  background-color: #2e7d32;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background 0.2s ease;
+    background-color: #2e7d32;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s ease;
 }
 
 .user-profile-review-form button:hover {
-  background-color: #256628;
+    background-color: #256628;
 }
 
 .delete-tree-btn {
-  background-color: #d32f2f;
-  color: white;
-  padding: 6px 10px;
-  border: none;
-  border-radius: 6px;
-  font-size: 13px;
-  margin-top: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+    background-color: #d32f2f;
+    color: white;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    margin-top: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
 .delete-tree-btn:hover {
-  background-color: #b71c1c;
+    background-color: #b71c1c;
+}
+
+.user-profile-edit-btn {
+    background-color: #2e7d32;
+    color: white;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 8px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.user-profile-edit-btn:hover {
+    background-color: #256628;
 }

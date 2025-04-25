@@ -1,3 +1,7 @@
+import os
+from uuid import uuid4
+
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 from rest_framework import status
@@ -171,3 +175,47 @@ def leave_event(request, event_id):
     event = get_object_or_404(EcoEvent, id=event_id)
     event.participants.remove(request.user)
     return Response({"detail": "Вы покинули мероприятие."}, status=200)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_profile(request):
+    user = request.user
+
+    username = request.data.get("username")
+    first_name = request.data.get("first_name")
+    last_name = request.data.get("last_name")
+
+    if username:
+        user.username = username
+    if first_name:
+        user.first_name = first_name
+    if last_name:
+        user.last_name = last_name
+
+    if "profile_picture" in request.FILES:
+        image = request.FILES["profile_picture"]
+        ext = image.name.split(".")[-1]
+        unique_name = f"avatars/user_{user.id}/{uuid4().hex}.{ext}"
+        full_path = os.path.join(settings.MEDIA_ROOT, unique_name)
+        os.makedirs(os.path.dirname(full_path), exist_ok=True)
+        with open(full_path, "wb+") as f:
+            for chunk in image.chunks():
+                f.write(chunk)
+        user.profile_picture.name = unique_name
+
+    user.save()
+    return Response({"detail": "Профиль обновлен."}, status=200)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def change_password(request):
+    user = request.user
+    old_password = request.data.get("old_password")
+    new_password = request.data.get("new_password")
+
+    if not user.check_password(old_password):
+        return Response({"detail": "Неверный текущий пароль."}, status=400)
+
+    user.set_password(new_password)
+    user.save()
+    return Response({"detail": "Пароль изменен."}, status=200)
