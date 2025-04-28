@@ -26,16 +26,16 @@ const TreeCard = ({ tree }) => {
       </div>
 
       <div className="tree-card-content">
-                <div className="tree-card-header">
-                  <strong className="tree-name">{tree.species_title}</strong>
-                  <span className="tree-type">
-                    {tree.species_name === "tree"
-                      ? "Дерево"
-                      : tree.species_name === "bush"
-                      ? "Кустарник"
-                      : "Неизвестно"}
-                  </span>
-                </div>
+        <div className="tree-card-header">
+          <span className="tree-name">{tree.species_title}</span>
+          <span className="tree-type">
+            {tree.species_name === "tree"
+              ? "Дерево"
+              : tree.species_name === "bush"
+              ? "Кустарник"
+              : "Неизвестно"}
+          </span>
+        </div>
 
         <div className="tree-card-description">
           {tree.description ? tree.description : "Описание отсутствует"}
@@ -43,11 +43,11 @@ const TreeCard = ({ tree }) => {
 
         <div className="tree-card-footer">
           <span className="tree-location">
-            📍 {tree.latitude}, {tree.longitude}
+            {tree.latitude}, {tree.longitude}
           </span>
           {tree.user && (
             <span className="tree-user">
-              👤 Добавил: {tree.user.username || `ID ${tree.user.id}`}
+              Добавил: {tree.user.username || `ID ${tree.user.id}`}
             </span>
           )}
           {createdDate && (

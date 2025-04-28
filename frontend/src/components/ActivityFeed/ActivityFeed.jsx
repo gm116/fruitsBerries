@@ -3,6 +3,7 @@ import "./ActivityFeed.css";
 import ActivityItem from "./ActivityItem";
 import TreeForm from "./TreeForm";
 import TreeCard from "./TreeCard";
+import ToggleButton from "./ToggleButton";
 
 const ActivityFeed = ({selectedTree, showAddTreeForm, setShowAddTreeForm, clickedCoords}) => {
     const [activities, setActivities] = useState([]);
@@ -165,55 +166,52 @@ const ActivityFeed = ({selectedTree, showAddTreeForm, setShowAddTreeForm, clicke
     };
 
     return (
-        <div className={`activity-feed ${!isFeedOpen ? "closed" : ""}`}>
-            <button
-                className={`toggle-button ${isFeedOpen ? "open" : ""}`}
-                onClick={toggleFeed}
-                title={isFeedOpen ? "Скрыть панель" : "Показать панель"}
-            >
-                {isFeedOpen ? "←" : "→"}
-            </button>
+        <>
+            <div className={`activity-feed ${!isFeedOpen ? "closed" : ""}`}>
+                {isFeedOpen && (
+                    <>
+                        {message && (
+                            <div className={`alert ${messageType === "success" ? "alert-success" : "alert-error"}`}>
+                                {message}
+                            </div>
+                        )}
 
-            {isFeedOpen && (
-                <>
-                    {message && (
-                        <div className={`alert ${messageType === "success" ? "alert-success" : "alert-error"}`}>
-                            {message}
-                        </div>
-                    )}
+                        {showAddTreeForm ? (
+                            <TreeForm
+                                plantData={plantData}
+                                speciesList={speciesList}
+                                handleInputChange={handleInputChange}
+                                handleImageChange={handleImageChange}
+                                handleFormSubmit={handleFormSubmit}
+                                onCancel={() => setShowAddTreeForm(false)}
+                            />
+                        ) : (
+                            <div className="activity-list">
+                                {selectedTree && <TreeCard tree={selectedTree}/>}
 
-                    {showAddTreeForm ? (
-                        <TreeForm
-                            plantData={plantData}
-                            speciesList={speciesList}
-                            handleInputChange={handleInputChange}
-                            handleImageChange={handleImageChange}
-                            handleFormSubmit={handleFormSubmit}
-                            onCancel={() => setShowAddTreeForm(false)}
-                        />
-                    ) : (
-                        <div className="activity-list">
-                            {selectedTree && <TreeCard tree={selectedTree}/>}
+                                {error && <p className="error">{error}</p>}
 
-                            {error && <p className="error">{error}</p>}
+                                {activities.length === 0 ? (
+                                    <p>Нет активности</p>
+                                ) : (
+                                    activities.map((activity) => (
+                                        <ActivityItem
+                                            key={activity.id}
+                                            action={activity.action}
+                                            user={activity.user}
+                                            datetime={activity.action_date}
+                                        />
+                                    ))
+                                )}
+                            </div>
+                        )}
+                    </>
+                )}
+            </div>
 
-                            {activities.length === 0 ? (
-                                <p>Нет активности</p>
-                            ) : (
-                                activities.map((activity) => (
-                                    <ActivityItem
-                                        key={activity.id}
-                                        action={activity.action}
-                                        user={activity.user}
-                                        datetime={activity.action_date}
-                                    />
-                                ))
-                            )}
-                        </div>
-                    )}
-                </>
-            )}
-        </div>
+            {/* Кнопка теперь отдельным компонентом */}
+            <ToggleButton isFeedOpen={isFeedOpen} toggleFeed={toggleFeed}/>
+        </>
     );
 };
 
