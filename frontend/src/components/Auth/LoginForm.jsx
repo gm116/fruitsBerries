@@ -3,20 +3,22 @@ import {useNavigate} from "react-router-dom";
 import "./AuthPage.css";
 
 const LoginForm = () => {
-    const [username, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setError("");
+
         try {
             const response = await fetch("http://localhost:8080/api/users/login/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({username: username, password}),
+                body: JSON.stringify({username, password}),
             });
 
             const data = await response.json();
@@ -24,12 +26,10 @@ const LoginForm = () => {
             if (response.ok) {
                 localStorage.setItem("token", data.access);
                 localStorage.setItem("refresh", data.refresh);
-
-                setError("");
                 navigate("/");
-                // alert(localStorage.getItem("token"))
+
             } else {
-                setError(data.detail || "Ошибка входа");
+                setError("Неверный логин или пароль");
             }
         } catch (error) {
             setError("Ошибка связи с сервером");
@@ -38,19 +38,22 @@ const LoginForm = () => {
 
     return (
         <form className="auth-form" onSubmit={handleLogin}>
-            <h2>Вход</h2>
-            {error && <p className="error">{error}</p>}
+            <h2 className="form-title">Вход</h2>
+
+            {error && <div className="alert error">{error}</div>}
+
             <label>
-                Логин:
+                Логин
                 <input
-                    type="username"
+                    type="text"
                     value={username}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => setUsername(e.target.value)}
                     required
                 />
             </label>
+
             <label>
-                Пароль:
+                Пароль
                 <input
                     type="password"
                     value={password}
@@ -58,6 +61,11 @@ const LoginForm = () => {
                     required
                 />
             </label>
+
+            <div className="forgot-password" onClick={() => navigate("/forgot-password")}>
+                Забыли пароль?
+            </div>
+
             <button type="submit">Войти</button>
         </form>
     );

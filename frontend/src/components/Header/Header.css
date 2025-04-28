@@ -70,3 +70,26 @@
 .add-plant-btn:hover {
     background-color: #F57C00;
 }
+
+.nav-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 8px 12px;
+    transition: background 0.3s ease, transform 0.1s ease;
+    white-space: nowrap;
+    text-align: center;
+    min-width: 90px;
+    border-radius: 5px;
+}
+
+.nav-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.05);
+}
+
+.nav-button.active {
+    background: rgba(255, 255, 255, 0.25);
+}

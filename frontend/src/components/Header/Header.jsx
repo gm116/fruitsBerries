@@ -20,6 +20,10 @@ const Header = ({ setShowAddTreeForm, toggleRegions, regionsVisible }) => {
 
   const isAuthPage = location.pathname === "/auth";
   const isMapPage = location.pathname === "/";
+  const isEventsPage = location.pathname === "/events";
+  const isProfilePage = location.pathname.startsWith("/user");
+
+  const getButtonClass = (active) => active ? "nav-button active" : "nav-button";
 
   return (
     <header className="header">
@@ -27,11 +31,15 @@ const Header = ({ setShowAddTreeForm, toggleRegions, regionsVisible }) => {
         фрукты-ягоды
       </div>
       <nav className="nav-links">
-        <button onClick={() => navigate("/")}>Карта</button>
+        {!isMapPage && (
+          <button className={getButtonClass(isMapPage)} onClick={() => navigate("/")}>
+            Карта
+          </button>
+        )}
 
         {isMapPage && (
           <>
-            <button onClick={toggleRegions}>
+            <button className="nav-button" onClick={toggleRegions}>
               {regionsVisible ? "Скрыть регионы" : "Отобразить регионы"}
             </button>
             {isAuthenticated && (
@@ -44,8 +52,12 @@ const Header = ({ setShowAddTreeForm, toggleRegions, regionsVisible }) => {
 
         {isAuthenticated ? (
           <>
-            <button onClick={() => navigate("/user")}>Профиль</button>
-            <button onClick={() => navigate("/events")}>Мероприятия</button>
+            <button className={getButtonClass(isProfilePage)} onClick={() => navigate("/user")}>
+              Профиль
+            </button>
+            <button className={getButtonClass(isEventsPage)} onClick={() => navigate("/events")}>
+              Мероприятия
+            </button>
             <button className="logout-btn" onClick={handleLogout}>
               Выйти
             </button>

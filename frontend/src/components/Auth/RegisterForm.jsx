@@ -3,14 +3,17 @@ import "./AuthPage.css";
 
 const RegisterForm = () => {
   const [username, setUsername] = useState("");
-  const [email, setEmail] = useState(""); // Добавляем состояние для email
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setError("");
+    setSuccess("");
 
     if (password !== confirmPassword) {
       setError("Пароли не совпадают");
@@ -24,13 +27,13 @@ const RegisterForm = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, email, password }), // Добавляем email в запрос
+        body: JSON.stringify({ username, email, password }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        setError(data.message || "Успешная регистрация");
+        setSuccess("Регистрация успешна");
       } else {
         setError(data.message || "Ошибка регистрации");
       }
@@ -43,10 +46,13 @@ const RegisterForm = () => {
 
   return (
     <form className="auth-form" onSubmit={handleRegister}>
-      <h2>Регистрация</h2>
-      {error && <p className="error">{error}</p>}
+      <h2 className="form-title">Регистрация</h2>
+
+      {success && <div className="alert success">{success}</div>}
+      {error && <div className="alert error">{error}</div>}
+
       <label>
-        Логин:
+        Логин
         <input
           type="text"
           value={username}
@@ -54,17 +60,19 @@ const RegisterForm = () => {
           required
         />
       </label>
+
       <label>
-        Email:
+        Email
         <input
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)} // Обрабатываем ввод email
+          onChange={(e) => setEmail(e.target.value)}
           required
         />
       </label>
+
       <label>
-        Пароль:
+        Пароль
         <input
           type="password"
           value={password}
@@ -72,8 +80,9 @@ const RegisterForm = () => {
           required
         />
       </label>
+
       <label>
-        Повторите пароль:
+        Повторите пароль
         <input
           type="password"
           value={confirmPassword}
@@ -81,6 +90,7 @@ const RegisterForm = () => {
           required
         />
       </label>
+
       <button type="submit" disabled={loading}>
         {loading ? "Загрузка..." : "Зарегистрироваться"}
       </button>

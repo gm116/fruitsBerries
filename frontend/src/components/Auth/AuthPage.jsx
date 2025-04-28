@@ -1,7 +1,7 @@
 import React, {useState} from "react";
+import "./AuthPage.css";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
-import "./AuthPage.css";
 
 const AuthPage = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -14,7 +14,7 @@ const AuthPage = () => {
                         className={`tab ${isLogin ? "active" : ""}`}
                         onClick={() => setIsLogin(true)}
                     >
-                        Вход
+                        Войти
                     </button>
                     <button
                         className={`tab ${!isLogin ? "active" : ""}`}
@@ -23,9 +23,8 @@ const AuthPage = () => {
                         Регистрация
                     </button>
                 </div>
-                <div className="auth-form">
-                    {isLogin ? <LoginForm/> : <RegisterForm/>}
-                </div>
+
+                {isLogin ? <LoginForm/> : <RegisterForm/>}
             </div>
         </div>
     );

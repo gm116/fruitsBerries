@@ -8,6 +8,7 @@ import ActivityFeed from "./components/ActivityFeed/ActivityFeed";
 import Profile from "./components/Profile/Profile";
 import {refreshTokenIfNeeded} from "./utils/tokenService";
 import EventsPage from "./components/Events/EventsPage";
+import ForgotPasswordPage from "./components/Auth/ForgotPasswordPage";
 
 const App = () => {
     const [selectedTree, setSelectedTree] = useState(null);
@@ -50,9 +51,10 @@ const App = () => {
                 />
                 <Routes>
                     <Route path="/auth" element={<AuthPage/>}/>
+                    <Route path="/forgot-password" element={<ForgotPasswordPage/>}/>
                     <Route path="/user" element={<Profile isOwnProfile={true}/>}/>
                     <Route path="/user/:id" element={<Profile isOwnProfile={false}/>}/>
-                    <Route path="/events" element={<EventsPage />} />
+                    <Route path="/events" element={<EventsPage/>}/>
                     <Route
                         path="/"
                         element={
