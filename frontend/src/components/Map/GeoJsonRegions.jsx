@@ -12,7 +12,7 @@ const GeoJsonRegions = ({show, onRegionClick, selectedRegionId, allowMapClick}) 
             }
 
             try {
-                const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}0/api/trees/heatmap/`);
+                const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/trees/heatmap/`);
                 const regions = await response.json();
                 const converted = regions.map(region => ({
                     geometry: region.geometry,
