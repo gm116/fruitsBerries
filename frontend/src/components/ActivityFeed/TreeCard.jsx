@@ -18,7 +18,7 @@ const TreeCard = ({ tree }) => {
         <img
           src={
             tree.image_url
-              ? `http://localhost:8080${tree.image_url}`
+              ? `${process.env.REACT_APP_BACKEND_URL}${tree.image_url}`
               : `https://static-maps.yandex.ru/1.x/?ll=${tree.longitude},${tree.latitude}&z=18&l=sat&size=650,450`
           }
           alt={tree.name}

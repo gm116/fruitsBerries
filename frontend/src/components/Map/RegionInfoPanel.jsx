@@ -9,7 +9,7 @@ const RegionInfoPanel = ({region, onClose}) => {
 
         const fetchCrops = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/api/trees/region-info/${region.id}/`);
+                const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/trees/region-info/${region.id}/`);
                 const data = await response.json();
                 setCrops(data.crops || []);
             } catch (err) {

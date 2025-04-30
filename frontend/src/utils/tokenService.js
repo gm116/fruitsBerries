@@ -9,7 +9,7 @@ export async function refreshTokenIfNeeded() {
     const now = Math.floor(Date.now() / 1000);
 
     if (payload.exp - now < 120) {
-      const response = await fetch("http://localhost:8080/api/token/refresh/", {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/token/refresh/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refresh }),

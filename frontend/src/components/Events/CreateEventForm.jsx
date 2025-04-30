@@ -18,7 +18,7 @@ const CreateEventForm = ({onSuccess}) => {
             start_datetime: startDateTime,
         };
 
-        const res = await fetch("http://localhost:8080/api/users/events/create/", {
+        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/events/create/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

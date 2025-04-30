@@ -20,7 +20,7 @@ const EditProfileModal = ({userData, onClose, onUpdate}) => {
         formData.append("last_name", lastName);
         if (profilePicture) formData.append("profile_picture", profilePicture);
 
-        const res = await fetch("http://localhost:8080/api/users/profile/update/", {
+        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/profile/update/`, {
             method: "PUT",
             headers: {Authorization: `Bearer ${token}`},
             body: formData,
@@ -38,7 +38,7 @@ const EditProfileModal = ({userData, onClose, onUpdate}) => {
     const handlePasswordSubmit = async (e) => {
         e.preventDefault();
 
-        const res = await fetch("http://localhost:8080/api/users/profile/change-password/", {
+        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/profile/change-password/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

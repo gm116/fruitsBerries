@@ -9,7 +9,7 @@ const PlantFilter = ({onFilterChange}) => {
     useEffect(() => {
         const fetchSpecies = async () => {
             try {
-                const response = await fetch("http://localhost:8080/api/trees/get_species/");
+                const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/trees/get_species/`);
                 const data = await response.json();
                 setSpeciesList(data);
                 const allIds = data.map((s) => s.id);

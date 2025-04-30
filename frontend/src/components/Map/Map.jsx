@@ -23,7 +23,7 @@ const MapComponent = ({
     useEffect(() => {
         const fetchTrees = async () => {
             try {
-                const response = await fetch("http://localhost:8080/api/trees/get-plants/");
+                const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/trees/get-plants/`);
                 if (!response.ok) throw new Error("Ошибка загрузки деревьев");
                 const data = await response.json();
                 setTrees(data);

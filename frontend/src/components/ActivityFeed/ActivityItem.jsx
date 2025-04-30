@@ -10,8 +10,8 @@ const ActivityItem = ({ action, user, datetime }) => {
   });
 
   const avatarUrl = user?.profile_picture
-    ? `http://localhost:8080${user.profile_picture}`
-    : `http://localhost:8080/media/avatars/default_avatar.png`;
+    ? `${process.env.REACT_APP_BACKEND_URL}${user.profile_picture}`
+    : `${process.env.REACT_APP_BACKEND_URL}/media/avatars/default_avatar.png`;
 
   return (
     <div className="activity-item">

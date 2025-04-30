@@ -13,7 +13,7 @@ const EventsPage = () => {
         const token = localStorage.getItem("token");
 
         const fetchUser = async () => {
-            const res = await fetch("http://localhost:8080/api/users/profile/", {
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/profile/`, {
                 headers: {Authorization: `Bearer ${token}`},
             });
             const data = await res.json();
@@ -21,7 +21,7 @@ const EventsPage = () => {
         };
 
         const fetchEvents = async () => {
-            const res = await fetch("http://localhost:8080/api/users/events/");
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/events/`);
             const data = await res.json();
             setEvents(data);
         };
@@ -47,7 +47,7 @@ const EventsPage = () => {
 
     const handleDelete = async (id) => {
         const token = localStorage.getItem("token");
-        const res = await fetch(`http://localhost:8080/api/users/events/${id}/delete/`, {
+        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/events/${id}/delete/`, {
             method: "DELETE",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -62,7 +62,7 @@ const EventsPage = () => {
 
     const handleLeave = async (id) => {
         const token = localStorage.getItem("token");
-        const res = await fetch(`http://localhost:8080/api/users/events/${id}/leave/`, {
+        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/events/${id}/leave/`, {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -83,7 +83,7 @@ const EventsPage = () => {
 
     const handleJoin = async (id) => {
         const token = localStorage.getItem("token");
-        const res = await fetch(`http://localhost:8080/api/users/events/${id}/join/`, {
+        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/events/${id}/join/`, {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${token}`,

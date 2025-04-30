@@ -36,7 +36,7 @@ const ActivityFeed = ({selectedTree, showAddTreeForm, setShowAddTreeForm, clicke
     useEffect(() => {
         const fetchActivities = async () => {
             try {
-                const response = await fetch("http://localhost:8080/api/users/activity-feed/");
+                const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/activity-feed/`);
                 if (!response.ok) throw new Error("Ошибка загрузки фида");
                 const data = await response.json();
                 setActivities((prev) => {
@@ -56,7 +56,7 @@ const ActivityFeed = ({selectedTree, showAddTreeForm, setShowAddTreeForm, clicke
     useEffect(() => {
         const fetchSpecies = async () => {
             try {
-                const response = await fetch("http://localhost:8080/api/trees/get_species/");
+                const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/trees/get_species/`);
                 if (!response.ok) throw new Error("Ошибка загрузки видов");
                 const data = await response.json();
                 setSpeciesList(data);
@@ -96,7 +96,7 @@ const ActivityFeed = ({selectedTree, showAddTreeForm, setShowAddTreeForm, clicke
 
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch("http://localhost:8080/api/trees/upload-image/", {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/trees/upload-image/`, {
                 method: "POST",
                 headers: {Authorization: `Bearer ${token}`},
                 body: formData,
@@ -139,7 +139,7 @@ const ActivityFeed = ({selectedTree, showAddTreeForm, setShowAddTreeForm, clicke
         };
 
         try {
-            const response = await fetch("http://localhost:8080/api/trees/add/", {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/trees/add/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -209,7 +209,6 @@ const ActivityFeed = ({selectedTree, showAddTreeForm, setShowAddTreeForm, clicke
                 )}
             </div>
 
-            {/* Кнопка теперь отдельным компонентом */}
             <ToggleButton isFeedOpen={isFeedOpen} toggleFeed={toggleFeed}/>
         </>
     );

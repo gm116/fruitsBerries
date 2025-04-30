@@ -14,7 +14,7 @@ const Profile = () => {
         const token = localStorage.getItem("token");
         const endpoint = id ? `/api/users/profile/?user_id=${id}` : `/api/users/profile/`;
         try {
-            const res = await fetch(`http://localhost:8080${endpoint}`, {
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}${endpoint}`, {
                 headers: {Authorization: `Bearer ${token}`},
             });
             const data = await res.json();
@@ -41,7 +41,7 @@ const Profile = () => {
 
         const token = localStorage.getItem("token");
         try {
-            const res = await fetch(`http://localhost:8080/api/trees/delete/${treeId}/`, {
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/trees/delete/${treeId}/`, {
                 method: "DELETE",
                 headers: {Authorization: `Bearer ${token}`},
             });
@@ -72,7 +72,7 @@ const Profile = () => {
         };
 
         try {
-            const res = await fetch("http://localhost:8080/api/users/leave-review/", {
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/leave-review/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -98,7 +98,7 @@ const Profile = () => {
 
     const avatarUrl = userData.profile_picture
         ? `${userData.profile_picture}`
-        : `http://localhost:8080/media/avatars/default_avatar.png`;
+        : `${process.env.REACT_APP_BACKEND_URL}/media/avatars/default_avatar.png`;
 
     return (
         <div className="user-profile-container">
@@ -147,7 +147,7 @@ const Profile = () => {
                                     <img
                                         src={
                                             tree.image_url
-                                                ? `http://localhost:8080${tree.image_url}`
+                                                ? `${process.env.REACT_APP_BACKEND_URL}${tree.image_url}`
                                                 : `https://static-maps.yandex.ru/1.x/?ll=${tree.longitude},${tree.latitude}&z=17&l=sat&size=300,200`
                                         }
                                         alt="tree"
