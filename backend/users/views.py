@@ -1,9 +1,12 @@
 import os
+from random import randint
 from uuid import uuid4
 
+from django.core.cache import cache
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
+from django.core.mail import send_mail
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
@@ -169,12 +172,14 @@ def delete_event(request, event_id):
     event.delete()
     return Response({"detail": "Мероприятие удалено."}, status=204)
 
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def leave_event(request, event_id):
     event = get_object_or_404(EcoEvent, id=event_id)
     event.participants.remove(request.user)
     return Response({"detail": "Вы покинули мероприятие."}, status=200)
+
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
@@ -206,6 +211,7 @@ def update_profile(request):
     user.save()
     return Response({"detail": "Профиль обновлен."}, status=200)
 
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def change_password(request):
@@ -219,3 +225,57 @@ def change_password(request):
     user.set_password(new_password)
     user.save()
     return Response({"detail": "Пароль изменен."}, status=200)
+
+
+@api_view(['POST'])
+def forgot_password(request):
+    email = request.data.get('email')
+
+    if not email:
+        return Response({'detail': 'Email обязателен'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response({'detail': 'Пользователь с таким email не найден'}, status=status.HTTP_404_NOT_FOUND)
+
+    reset_code = f"{randint(100000, 999999)}"
+
+    cache.set(f'reset_password_{email}', reset_code, timeout=600)
+
+    send_mail(
+        subject='Код для восстановления пароля',
+        message=f'Ваш код для восстановления пароля: {reset_code}',
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[email],
+        fail_silently=False,
+    )
+
+    return Response({'message': 'Код отправлен на почту'})
+
+
+@api_view(['POST'])
+def reset_password(request):
+    email = request.data.get('email')
+    code = request.data.get('code')
+    new_password = request.data.get('new_password')
+
+    if not email or not code or not new_password:
+        return Response({'detail': 'Email, код и новый пароль обязательны'}, status=status.HTTP_400_BAD_REQUEST)
+
+    cached_code = cache.get(f'reset_password_{email}')
+
+    if not cached_code or cached_code != code:
+        return Response({'detail': 'Неверный или устаревший код'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response({'detail': 'Пользователь не найден'}, status=status.HTTP_404_NOT_FOUND)
+
+    user.set_password(new_password)
+    user.save()
+
+    cache.delete(f'reset_password_{email}')
+
+    return Response({'message': 'Пароль успешно изменён'})

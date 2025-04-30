@@ -2,7 +2,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from . import views
-from .views import check_token, get_user_profile, leave_review
+from .views import check_token, get_user_profile, leave_review, forgot_password, reset_password
 
 urlpatterns = [
     path('register/', views.register_user, name='register'),
@@ -18,4 +18,6 @@ urlpatterns = [
     path('events/<int:event_id>/leave/', views.leave_event, name='leave-event'),
     path('profile/update/', views.update_profile, name='update-profile'),
     path('profile/change-password/', views.change_password, name='change-password'),
+    path('forgot-password/', forgot_password, name='forgot-password'),
+    path('reset-password/', reset_password, name='reset-password'),
 ]
