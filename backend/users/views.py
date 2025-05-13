@@ -77,7 +77,7 @@ def login_user(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_activity_feed(request):
-    activities = ActivityLog.objects.all().order_by('-action_date')[:5]
+    activities = ActivityLog.objects.all().order_by('-action_date')[:15]
     serializer = ActivityLogSerializer(activities, many=True)
     return Response(serializer.data)
 

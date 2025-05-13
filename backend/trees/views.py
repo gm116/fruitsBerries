@@ -86,14 +86,6 @@ def delete_plant(request, plant_id):
     ActivityLog.objects.create(user=request.user, action=f"удалил растение")
     return Response({"detail": "Растение удалено."}, status=204)
 
-
-@api_view(['GET'])
-def get_regions(request):
-    regions = Region.objects.all()
-    serializer = RegionSerializer(regions, many=True)
-    return Response(serializer.data)
-
-
 @api_view(['GET'])
 def get_region_heatmap(request):
     data = []
